@@ -1,8 +1,8 @@
 package modelpad.view;
 
 import modelpad.view.ClassNodeView.NodeListener;
+import modelpad.view.LinkView.Orientation;
 import android.graphics.PointF;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
 
@@ -44,7 +44,6 @@ public class LinkBinder implements NodeListener {
 		PointF centerLabelA = computeLabelCenter(labelA, anchorA, vA2B);
 		labelA.setX(centerLabelA.x - labelA.getMeasuredWidth() / 2);
 		labelA.setY(centerLabelA.y - labelA.getMeasuredHeight() / 2);
-		Log.d(LOG, "label width: " + labelA.getMeasuredWidth());
 
 		// B -> A
 		PointF vB2A = new PointF(centerAX - centerBX, centerAY - centerBY);
@@ -55,7 +54,13 @@ public class LinkBinder implements NodeListener {
 		// link
 		float posX = centerAX < centerBX ? centerAX : centerBX;
 		float posY = centerAY < centerBY ? centerAY : centerBY;
-		link.update(posX, posY, vA2B, 0);
+		int corners = 0;
+		Orientation o = Orientation.Horizontal;
+		if (centerAY < centerBY) {
+			link.update(posX, posY, vA2B, corners, o);
+		} else {
+			link.update(posX, posY, vB2A, corners, o);
+		}
 	}
 
 	private PointF computeLabelCenter(View label, View anchor, PointF v) {

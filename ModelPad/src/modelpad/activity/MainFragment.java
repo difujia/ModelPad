@@ -6,7 +6,7 @@ import modelpad.model.EAttribute;
 import modelpad.model.EClass;
 import modelpad.model.EText;
 import modelpad.model.ElementManager;
-import modelpad.model.NamedElement;
+import modelpad.model.Element;
 import modelpad.view.ClassNodeView;
 import modelpad.view.ElementView;
 import modelpad.view.LinkBinder;
@@ -40,6 +40,7 @@ public class MainFragment extends Fragment {
 	final ClassOnDragListener mClassOnDragListener = new ClassOnDragListener();
 	final ClassTitleOnDragListener mClassTitleOnDragListener = new ClassTitleOnDragListener();
 	final SectionOnDragListener mAttrSectionOnDragListener = new SectionOnDragListener();
+	final RefOnDragListener mRefOnDragListener = new RefOnDragListener();
 
 	final ElementManager manager = new ElementManager();
 
@@ -79,18 +80,18 @@ public class MainFragment extends Fragment {
 					ClassNodeView node;
 
 					DragData data = (DragData) ev.getLocalState();
-					NamedElement comingElement = data.getElement();
+					Element comingElement = data.getElement();
 					if (comingElement instanceof EClass) {
 						// this is a move operation
 						node = (ClassNodeView) data.getSourceView();
 					} else {
 						// need to create new EClass
-						if (!manager.allowCreateClass(comingElement)) {
+						if (!manager.canConsumeClass(comingElement)) {
 							// class of same name may have existed
 							break;
 						}
 
-						EClass clazz = manager.createClass(comingElement);
+						EClass clazz = manager.consumeClass(comingElement);
 						// remove source view from its parent if any
 						View source = data.getSourceView();
 						if (source != null) {
@@ -112,9 +113,6 @@ public class MainFragment extends Fragment {
 					float x = (ev.getX() - node.getMeasuredWidth() / 2);
 					float y = (ev.getY() - node.getMeasuredHeight() / 2);
 					node.moveTo(x, y);
-					if (BuildConfig.DEBUG) {
-						Log.d(LOG, "Node padding left: " + node.getPaddingLeft());
-					}
 					break;
 			}
 			return true;
@@ -130,7 +128,7 @@ public class MainFragment extends Fragment {
 		@Override
 		public boolean onDrag(View v, DragEvent ev) {
 			DragData data = (DragData) ev.getLocalState();
-			NamedElement comingElement = data.getElement();
+			Element comingElement = data.getElement();
 			EClass myClazz = (EClass) v.getTag();
 
 			if (manager.allowConnect(myClazz, comingElement) == false) {
@@ -160,7 +158,9 @@ public class MainFragment extends Fragment {
 					if (self != that) {
 						LinkView link = new LinkView(getActivity());
 						TextView labelForSelf = ViewFactory.createLabel(getActivity());
+						labelForSelf.setOnDragListener(mRefOnDragListener);
 						TextView labelForThat = ViewFactory.createLabel(getActivity());
+						labelForThat.setOnDragListener(mRefOnDragListener);
 						canvas.addView(labelForSelf, 0);
 						canvas.addView(labelForThat, 0);
 						canvas.addView(link, 0);
@@ -186,7 +186,7 @@ public class MainFragment extends Fragment {
 		@Override
 		public boolean onDrag(View v, DragEvent ev) {
 			DragData data = (DragData) ev.getLocalState();
-			NamedElement comingElement = data.getElement();
+			Element comingElement = data.getElement();
 			EClass myClazz = (EClass) v.getTag();
 			switch (ev.getAction()) {
 				case DragEvent.ACTION_DRAG_STARTED:
@@ -222,8 +222,31 @@ public class MainFragment extends Fragment {
 	class RefOnDragListener implements OnDragListener {
 
 		@Override
-		public boolean onDrag(View v, DragEvent event) {
+		public boolean onDrag(View v, DragEvent ev) {
 			// TODO Auto-generated method stub
+			DragData data = (DragData) ev.getLocalState();
+			Element comingElement = data.getElement();
+			if (comingElement instanceof EClass) {
+				return false;
+			}
+			switch (ev.getAction()) {
+				case DragEvent.ACTION_DRAG_STARTED:
+					// do nothing?
+					break;
+				case DragEvent.ACTION_DRAG_ENTERED:
+					v.setBackgroundResource(R.drawable.bg_label_highlight);
+					break;
+				case DragEvent.ACTION_DRAG_LOCATION:
+					break;
+				case DragEvent.ACTION_DRAG_EXITED:
+					v.setBackgroundResource(R.drawable.bg_label);
+					break;
+				case DragEvent.ACTION_DROP:
+					break;
+				case DragEvent.ACTION_DRAG_ENDED:
+					v.setBackgroundResource(R.drawable.bg_label);
+					break;
+			}
 			return false;
 		}
 
@@ -234,13 +257,12 @@ public class MainFragment extends Fragment {
 		@Override
 		public boolean onDrag(View v, DragEvent ev) {
 			DragData data = (DragData) ev.getLocalState();
-			NamedElement comingElement = data.getElement();
+			Element comingElement = data.getElement();
 			EClass myClazz = (EClass) v.getTag();
 
 			switch (ev.getAction()) {
 				case DragEvent.ACTION_DRAG_STARTED:
 					boolean isAllowed = manager.allowAddAttrToClass(comingElement, myClazz);
-					Log.d(LOG, "can accept child: " + isAllowed);
 					return isAllowed;
 				case DragEvent.ACTION_DRAG_ENTERED:
 					v.setBackgroundResource(R.drawable.bg_section_highlight);
@@ -288,7 +310,7 @@ public class MainFragment extends Fragment {
 		@Override
 		public boolean onLongClick(View v) {
 			DragShadowBuilder shadowBuilder = new DragShadowBuilder(v);
-			DragData data = new DragDataBuilder().setElement((NamedElement) v.getTag()).setSourceView(v).build();
+			DragData data = new DragDataBuilder().setElement((Element) v.getTag()).setSourceView(v).build();
 			v.startDrag(null, shadowBuilder, data, 0);
 			return true;
 		}

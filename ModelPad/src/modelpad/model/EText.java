@@ -1,18 +1,13 @@
 package modelpad.model;
 
-public class EText extends NamedElement {
+public class EText extends Element {
 
-	public EText(NameSet names) {
-		super(names, "text");
+	protected EText(String name) {
+		super(name);
 	}
-	
+
 	@Override
-	public boolean isDestroyed() {
-		return false;
-	}
-	
-	@Override
-	public void destroy() {
-		// not really destroyable
+	public void recycle() {
+		// not really recycleable
 	}
 }

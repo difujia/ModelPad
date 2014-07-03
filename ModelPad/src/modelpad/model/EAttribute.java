@@ -1,13 +1,12 @@
 package modelpad.model;
 
-public class EAttribute extends NamedElement {
+public class EAttribute extends Element {
+
+	protected EAttribute(String name) {
+		super(name);
+	}
 
 	private EClass owner;
-
-	EAttribute(NamedElement source) {
-		super(source.names, "attribute");
-		source.destroy();
-	}
 
 	void setOwner(EClass owner) {
 		this.owner = owner;
@@ -26,8 +25,7 @@ public class EAttribute extends NamedElement {
 	}
 
 	@Override
-	public void destroy() {
-		super.destroy();
+	public void recycle() {
 		removeFromOwner();
 	}
 

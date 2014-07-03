@@ -1,6 +1,8 @@
 package modelpad.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class ElementManager {
@@ -15,58 +17,69 @@ public class ElementManager {
 		void classLostAttr(EClass clazz, EAttribute attr);
 	}
 
-	private Set<EClass> allClasses = new HashSet<>();
-	private Set<EText> allText = new HashSet<>();
+	private Level level;
+	private List<EClass> allClasses = new ArrayList<>();
+	private List<EClass> allConsumedClasses = new ArrayList<>();
+	private List<EAttribute> allAttrs = new ArrayList<>();
+	private List<EAttribute> allConsumedAttrs = new ArrayList<>();
 
-	String[] textNames = new String[] { "apple", "orange", "banana", "lemon", "melon", "strawberry" };
-	String[] attrNames = new String[] { "myApple", "myOrange", "myBanana", "myLemon", "myMelon",
-			"myStrawberry" };
-	String[] classNames = new String[] { "Apple", "Orange", "Banana", "Lemon", "Melon", "Strawberry" };
-
-	public ElementManager() {
-		for (int i = 0; i < 6; i++) {
-			NameSet nameSet = new NameSet();
-			nameSet.putNameAndKey(textNames[i], "text");
-			nameSet.putNameAndKey(attrNames[i], "attribute");
-			nameSet.putNameAndKey(classNames[i], "class");
-			EText text = new EText(nameSet);
-			allText.add(text);
+	public ElementManager(Level level) {
+		this.level = level;
+		String[] classNames = level.getAllClassNames();
+		for (String className : classNames) {
+			EClass clazz = new EClass(className);
+			allClasses.add(clazz);
+		}
+		String[] attrNames = level.getAllAttrNames();
+		for (String attrName : attrNames) {
+			EAttribute attr = new EAttribute(attrName);
+			allAttrs.add(attr);
 		}
 	}
 
-	public EText[] getAllText() {
-		return allText.toArray(new EText[allText.size()]);
+	// public boolean allowCopyName(Element from, EClass to) {
+	// return !(from instanceof EClass);
+	// }
+	//
+	// public void copyName(Element from, EClass to) {
+	// if (allowCopyName(from, to) == false) {
+	// throw new IllegalArgumentException();
+	// }
+	// to.copyNameFrom(from);
+	// from.recycle();
+	// }
+
+	public EClass[] getAllClasses() {
+		return allClasses.toArray(new EClass[allClasses.size()]);
 	}
 
-	public boolean allowCopyName(NamedElement from, EClass to) {
-		return !(from instanceof EClass);
+	public EClass[] getAllConsumedClasses() {
+		return allConsumedClasses.toArray(new EClass[allConsumedClasses.size()]);
 	}
 
-	public void copyName(NamedElement from, EClass to) {
-		if (allowCopyName(from, to) == false) {
+	public EAttribute[] getAllAttrs() {
+		return allAttrs.toArray(new EAttribute[allAttrs.size()]);
+	}
+
+	public EAttribute[] getAllConsumedAttrs() {
+		return allConsumedAttrs.toArray(new EAttribute[allConsumedAttrs.size()]);
+	}
+
+	public boolean canConsumeClass(EClass clazz) {
+		return !allConsumedClasses.contains(clazz);
+	}
+
+	public EClass consumeClass(EClass clazz) {
+		if (canConsumeClass(clazz) == false) {
 			throw new IllegalArgumentException();
 		}
-		to.copyNameFrom(from);
-		from.destroy();
-	}
-
-	public boolean allowCreateClass(NamedElement material) {
-		return !(material instanceof EClass) && !allClasses.contains(material);
-	}
-
-	public EClass createClass(NamedElement material) {
-		if (allowCreateClass(material) == false) {
-			throw new IllegalArgumentException();
-		}
-		EClass clazz = new EClass(material);
-		material.destroy();
-		allClasses.add(clazz);
+		allConsumedClasses.add(clazz);
 		return clazz;
 	}
 
-	public boolean allowAddAttrToClass(NamedElement material, EClass receiver) {
-		return !(material instanceof EClass);
-	}
+//	public boolean allowAddAttrToClass(Element material, EClass receiver) {
+//		return !(material instanceof EClass);
+//	}
 
 	/**
 	 * Always remove attr from its origin, the receiver may ignore the attr if it has duplicates.
@@ -75,21 +88,16 @@ public class ElementManager {
 	 * @param receiver
 	 * @return
 	 */
-	public EAttribute addAttrToClass(NamedElement material, EClass receiver) {
-		if (allowAddAttrToClass(material, receiver) == false) {
-			throw new IllegalArgumentException();
-		}
+	public EAttribute addAttrToClass(EAttribute attr, EClass receiver) {
+//		if (allowAddAttrToClass(material, receiver) == false) {
+//			throw new IllegalArgumentException();
+//		}
 
-		EAttribute attr;
-		if (material instanceof EAttribute) {
-			attr = (EAttribute) material;
 			if (!attr.isOwnedBy(receiver)) {
 				attr.removeFromOwner();
+				receiver.addAttr(attr)
 			}
-		} else {
-			attr = new EAttribute(material);
-			material.destroy();
-		}
+
 
 		boolean hadAlready = receiver.hasAttr(attr);
 		if (hadAlready) {
@@ -105,16 +113,16 @@ public class ElementManager {
 
 	}
 
-	public boolean allowConnect(NamedElement left, NamedElement right) {
+	public boolean allowConnect(Element left, Element right) {
 		return allowMakeRef(left, right) || allowMakeRef(right, left) || allowInherit(left, right)
 				|| allowInherit(right, left);
 	}
 
-	public boolean allowMakeRef(NamedElement from, NamedElement to) {
+	public boolean allowMakeRef(Element from, Element to) {
 		return (from instanceof EClass) && (to instanceof EClass);
 	}
 
-	public boolean allowInherit(NamedElement superType, NamedElement subType) {
+	public boolean allowInherit(Element superType, Element subType) {
 		// TODO check super types
 		return (subType instanceof EClass) && (superType instanceof EClass);
 	}

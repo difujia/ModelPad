@@ -3,19 +3,19 @@ package modelpad.model;
 import java.util.HashSet;
 import java.util.Set;
 
-public class EClass extends NamedElement {
+public class EClass extends Element {
+
+	protected EClass(String name) {
+		super(name);
+	}
 
 	private Set<EClass> superTypes = new HashSet<>();
 	private Set<EAttribute> attributes = new HashSet<>();
 	private Set<EReference> references = new HashSet<>();
 
-	EClass(NamedElement source) {
-		super(source.names, "class");
-	}
-
-	void copyNameFrom(NamedElement source) {
-		this.names = source.names;
-	}
+//	void copyNameFrom(Element source) {
+//		this.names = source.names;
+//	}
 
 	boolean addSuperType(EClass superType) {
 		if (superType == this) {
@@ -49,8 +49,8 @@ public class EClass extends NamedElement {
 	}
 
 	@Override
-	public void destroy() {
-		super.destroy();
+	public void recycle() {
+		super.recycle();
 		superTypes.clear();
 		superTypes = null;
 		attributes.clear();

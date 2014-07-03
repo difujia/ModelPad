@@ -16,15 +16,15 @@ public class DragData {
 		return (View) dataHolder.get(SOURCE_VIEW);
 	}
 
-	public NamedElement getElement() {
-		return (NamedElement) dataHolder.get(ELEMENT);
+	public Element getElement() {
+		return (Element) dataHolder.get(ELEMENT);
 	}
 
 	void setSourceView(View v) {
 		dataHolder.put(SOURCE_VIEW, v);
 	}
 
-	void setElement(NamedElement e) {
+	void setElement(Element e) {
 		dataHolder.put(ELEMENT, e);
 	}
 

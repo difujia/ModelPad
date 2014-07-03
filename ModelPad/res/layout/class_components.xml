@@ -32,7 +32,8 @@
         android:background="@drawable/bg_section"
         android:divider="@drawable/section_divider"
         android:orientation="vertical"
-        android:showDividers="middle" >
+        android:showDividers="middle"
+        android:visibility="gone" >
 
         <TextView
             android:layout_width="match_parent"

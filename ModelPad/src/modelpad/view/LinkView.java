@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.util.AttributeSet;
@@ -13,12 +12,19 @@ import android.util.Log;
 import android.view.View;
 
 public class LinkView extends View implements DynamicLink {
+
+	public enum Orientation {
+		Unspecified, Horizontal, Vertical
+	}
+
 	private final String LOG = "LinkView";
 
 	private PointF vector = new PointF();;
 	private PointF origin = new PointF();
 	private Path path = new Path();
 	private Paint paint = new Paint();
+	private int numOfCorners = 0;
+	private Orientation orientation = Orientation.Unspecified;
 
 	public LinkView(Context context) {
 		this(context, null);
@@ -31,9 +37,13 @@ public class LinkView extends View implements DynamicLink {
 	public LinkView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		paint.setColor(Color.BLACK);
-		paint.setStrokeWidth(0);
-		paint.setStyle(Style.STROKE);
+		paint.setStrokeWidth(1f);
+		paint.setStrokeMiter(1f);
 		paint.setAntiAlias(true);
+		paint.setDither(true);
+		paint.setStyle(Paint.Style.STROKE);
+		paint.setStrokeJoin(Paint.Join.ROUND);
+		paint.setStrokeCap(Paint.Cap.ROUND);
 	}
 
 	@Override
@@ -51,13 +61,13 @@ public class LinkView extends View implements DynamicLink {
 		if (vector.y < 0) {
 			dispY = Math.abs(vector.y);
 		}
-
 		vector.offset(dispX, dispY);
 		origin.offset(dispX, dispY);
+
 		if (BuildConfig.DEBUG) {
 			Log.d(LOG, "/******** onMeasure ********/");
 			Log.d(LOG, String.format("posX: %f, posY: %f", getX(), getY()));
-			Log.d(LOG, String.format("width: %d, height: %d", getWidth(), getHeight()));
+			Log.d(LOG, String.format("width: %d, height: %d", getMeasuredWidth(), getMeasuredHeight()));
 			Log.d(LOG, String.format("vectorX: %f, vectorY: %f", vector.x, vector.y));
 			Log.d(LOG, String.format("originX: %f, originY: %f", origin.x, origin.y));
 			Log.d(LOG, "/******** onMeasure end ********/");
@@ -66,18 +76,59 @@ public class LinkView extends View implements DynamicLink {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		path.rewind();
+		path.reset();
 		path.moveTo(origin.x, origin.y);
-		path.lineTo(vector.x, vector.y);
+		if (numOfCorners == 0) {
+			makeStraightPath();
+		} else if (numOfCorners == 1) {
+			makeOneCornerPath();
+		} else if (numOfCorners == 2) {
+			makeTwoCornerPath();
+		} else {
+			throw new IllegalStateException("numOfCorner must be 0, 1 or 2");
+		}
+
 		canvas.drawPath(path, paint);
 	}
 
+	private void makeStraightPath() {
+		path.lineTo(vector.x, vector.y);
+	}
+
+	private void makeOneCornerPath() {
+		if (orientation == Orientation.Horizontal) {
+			path.rLineTo(vector.x - origin.x, 0);
+			path.rLineTo(0, vector.y - origin.y);
+		} else if (orientation == Orientation.Vertical) {
+			path.rLineTo(0, vector.y - origin.y);
+			path.rLineTo(vector.x - origin.x, 0);
+		} else {
+			makeStraightPath();
+		}
+	}
+
+	private void makeTwoCornerPath() {
+		if (orientation == Orientation.Horizontal) {
+			path.rLineTo((vector.x - origin.x) / 2, 0);
+			path.rLineTo(0, vector.y - origin.y);
+			path.rLineTo((vector.x - origin.x) / 2, 0);
+		} else if (orientation == Orientation.Vertical) {
+			path.rLineTo(0, (vector.y - origin.y) / 2);
+			path.rLineTo(vector.x - origin.x, 0);
+			path.rLineTo(0, (vector.y - origin.y) / 2);
+		} else {
+			makeStraightPath();
+		}
+	}
+
 	@Override
-	public void update(float posX, float posY, PointF vec, int numOfCorners) {
+	public void update(float posX, float posY, PointF vec, int numOfCorners, Orientation o) {
 		// TODO Auto-generated method stub
 		setX(posX);
 		setY(posY);
 		this.vector.set(vec);
+		this.numOfCorners = numOfCorners;
+		this.orientation = o;
 		invalidate();
 		requestLayout();
 	}

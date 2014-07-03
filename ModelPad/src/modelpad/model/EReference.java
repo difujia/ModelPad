@@ -1,11 +1,10 @@
 package modelpad.model;
 
-public class EReference implements Destroyable {
+public class EReference implements Recycleable {
 
 	private EClass source;
 	private EClass target;
 	private EReference opposite;
-	private boolean isDestroyed = false;
 	private boolean containment = false;
 	private boolean multiple = false;
 	private String name = "";
@@ -56,18 +55,12 @@ public class EReference implements Destroyable {
 	}
 
 	@Override
-	public void destroy() {
-		isDestroyed = true;
+	public void recycle() {
 		source.removeRef(this);
 		if (opposite != null) {
 			opposite.removeOpposite();
 			opposite = null;
 		}
-	}
-
-	@Override
-	public boolean isDestroyed() {
-		return isDestroyed;
 	}
 
 }

@@ -14,7 +14,7 @@ public class DragDataBuilder {
 		return data;
 	}
 
-	public DragDataBuilder setElement(NamedElement e) {
+	public DragDataBuilder setElement(Element e) {
 		data.setElement(e);
 		return this;
 	}

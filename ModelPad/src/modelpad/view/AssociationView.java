@@ -1,6 +1,7 @@
 package modelpad.view;
 
 import modelpad.activity.R;
+import modelpad.view.LinkView.Orientation;
 import android.content.Context;
 import android.graphics.PointF;
 import android.view.View;
@@ -32,14 +33,6 @@ public class AssociationView extends ViewGroup implements DynamicLink {
 	}
 
 	@Override
-	public void update(float posX, float posY, PointF vector, int numOfCorners) {
-		setX(posX);
-		setY(posY);
-		requestLayout();
-		invalidate();
-	}
-
-	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		int left = anchorA.getLeft() < anchorB.getLeft() ? anchorA.getLeft() : anchorB.getLeft();
 		int right = anchorA.getRight() > anchorB.getRight() ? anchorA.getRight() : anchorB.getRight();
@@ -54,6 +47,15 @@ public class AssociationView extends ViewGroup implements DynamicLink {
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void update(float posX, float posY, PointF vec, int numOfCorners, Orientation o) {
+		// TODO Auto-generated method stub
+		setX(posX);
+		setY(posY);
+		requestLayout();
+		invalidate();
 	}
 
 }
