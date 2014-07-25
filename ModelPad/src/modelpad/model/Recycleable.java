@@ -1,6 +1,6 @@
 package modelpad.model;
 
-public interface Recycleable {
+interface Recycleable {
 
-	public void recycle();
+	void recycle();
 }

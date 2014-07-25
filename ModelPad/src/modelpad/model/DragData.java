@@ -1,31 +1,47 @@
 package modelpad.model;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.view.View;
 
 public class DragData {
 
-	private static final String SOURCE_VIEW = "SourceView";
-	private static final String ELEMENT = "Element";
+	public interface CompletionHandler {
+		void complete(boolean consumed);
+	}
 
-	private Map<String, Object> dataHolder = new HashMap<>();
+	public static final CompletionHandler DummyHandler = new CompletionHandler() {
+		@Override
+		public void complete(boolean consumed) {
+			// dummy does nothing
+		}
+	};
 
-	public View getSourceView() {
-		return (View) dataHolder.get(SOURCE_VIEW);
+	private Element mElement;
+	private View mSourceView;
+	private CompletionHandler mCompletionHandler;
+
+	public DragData(Element e) {
+		mElement = e;
 	}
 
 	public Element getElement() {
-		return (Element) dataHolder.get(ELEMENT);
+		return mElement;
 	}
 
-	void setSourceView(View v) {
-		dataHolder.put(SOURCE_VIEW, v);
+	public View getSourceView() {
+		return mSourceView;
 	}
 
-	void setElement(Element e) {
-		dataHolder.put(ELEMENT, e);
+	public DragData with(CompletionHandler handler) {
+		mCompletionHandler = handler;
+		return this;
 	}
 
+	public DragData with(View sourceView) {
+		mSourceView = sourceView;
+		return this;
+	}
+
+	public void complete(boolean consumed) {
+		mCompletionHandler.complete(consumed);
+	}
 }

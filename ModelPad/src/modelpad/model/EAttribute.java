@@ -1,32 +1,53 @@
 package modelpad.model;
 
+import com.google.common.base.Objects.ToStringHelper;
+
 public class EAttribute extends Element {
 
-	protected EAttribute(String name) {
+	private EClass mOwner;
+	private String mType;
+
+	EAttribute(String name, String type) {
 		super(name);
+		mType = type;
 	}
 
-	private EClass owner;
+	@Override
+	public String getName() {
+		return super.getName();
+	}
+
+	String getType() {
+		return mType;
+	}
 
 	void setOwner(EClass owner) {
-		this.owner = owner;
+		this.mOwner = owner;
 	}
 
 	void removeFromOwner() {
-		if (owner == null) {
-			return;
+		if (mOwner != null) {
+			boolean modified = mOwner.removeAttr(this);
+			if (!modified) {
+				throw new IllegalStateException("Owner doesn't have this attribute");
+			}
+			mOwner = null;
 		}
-		owner.removeAttr(this);
-		owner = null;
 	}
 
 	boolean isOwnedBy(EClass clazz) {
-		return owner == clazz;
+		return mOwner == clazz;
 	}
 
 	@Override
 	public void recycle() {
 		removeFromOwner();
+		super.recycle();
+	}
+
+	@Override
+	protected ToStringHelper toStringHelper() {
+		return super.toStringHelper().add("type", mType);
 	}
 
 }

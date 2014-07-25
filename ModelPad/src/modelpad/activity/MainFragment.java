@@ -1,75 +1,93 @@
 package modelpad.activity;
 
+import modelpad.model.AttributeViewModel;
+import modelpad.model.ClassViewModel;
 import modelpad.model.DragData;
-import modelpad.model.DragDataBuilder;
+import modelpad.model.DragData.CompletionHandler;
 import modelpad.model.EAttribute;
 import modelpad.model.EClass;
-import modelpad.model.EText;
-import modelpad.model.ElementManager;
+import modelpad.model.EReference;
+import modelpad.model.EReferenceInfo;
 import modelpad.model.Element;
-import modelpad.view.ClassNodeView;
+import modelpad.model.ModelFactory;
+import modelpad.model.ElementManager;
+import modelpad.model.Level;
+import modelpad.model.ReferenceInfoViewModel;
+import modelpad.view.ClassView;
 import modelpad.view.ElementView;
 import modelpad.view.LinkBinder;
 import modelpad.view.LinkView;
+import modelpad.view.SectionView;
 import modelpad.view.ViewFactory;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.DragShadowBuilder;
 import android.view.View.MeasureSpec;
 import android.view.View.OnDragListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+
+import com.hb.views.PinnedSectionListView;
 
 public class MainFragment extends Fragment {
 
 	static final String LOG = "MainFragment";
 
-	FrameLayout canvas;
-	LinearLayout panel;
-	// TODO refactor following to private static final
-	final TextElementOnLongClickListener mTextLongClickListener = new TextElementOnLongClickListener();
-	final ElementViewOnLongClickListener mElementLongClickListener = new ElementViewOnLongClickListener();
-	final ClassOnDragListener mClassOnDragListener = new ClassOnDragListener();
-	final ClassTitleOnDragListener mClassTitleOnDragListener = new ClassTitleOnDragListener();
-	final SectionOnDragListener mAttrSectionOnDragListener = new SectionOnDragListener();
-	final RefOnDragListener mRefOnDragListener = new RefOnDragListener();
+	private FrameLayout mCanvas;
+	private PinnedSectionListView mElementList;
+	private ElementSectionListAdapter mElementListAdapter;
+
+	private final ClassOnDragListener mClassOnDragListener = new ClassOnDragListener();
+	private final AttrSectionOnDragListener mAttrSectionOnDragListener = new AttrSectionOnDragListener();
 
 	final ElementManager manager = new ElementManager();
+	final Level mLevel = new Level();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View root = inflater.inflate(R.layout.fragment_main, container, false);
-		panel = (LinearLayout) root.findViewById(R.id.panel);
-		canvas = (FrameLayout) root.findViewById(R.id.canvas);
+		// panel = (LinearLayout) root.findViewById(R.id.panel);
+		mCanvas = (FrameLayout) root.findViewById(R.id.canvas);
+		mElementList = (PinnedSectionListView) root.findViewById(R.id.panel_element_list);
 		return root;
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		EText[] all = manager.getAllText();
-		for (EText text : all) {
-			Button b = new Button(getActivity());
-			b.setText(text.getName());
-			b.setTag(text);
-			b.setOnLongClickListener(mTextLongClickListener);
-			panel.addView(b);
-		}
-		canvas.setOnDragListener(new CanvasOnDragListener());
+
+		mElementListAdapter = new ElementSectionListAdapter(getActivity());
+		mElementListAdapter.addSectionObject(ModelFactory.getHeaderClass());
+		mElementListAdapter.addSectionObject(ModelFactory.getHeaderAttr());
+		mElementListAdapter.addSectionObject(ModelFactory.getHeaderRef());
+
+		mElementListAdapter.addAll(mLevel.getAllClasses());
+		mElementListAdapter.addAll(mLevel.getAllAttrs());
+		mElementListAdapter.addAll(mLevel.getAllRefs());
+
+		mElementList.setAdapter(mElementListAdapter);
+
+		mCanvas.setOnDragListener(new CanvasOnDragListener());
 		super.onActivityCreated(savedInstanceState);
 	}
 
 	class CanvasOnDragListener implements OnDragListener {
 		@Override
 		public boolean onDrag(View v, DragEvent ev) {
+			DragData data = (DragData) ev.getLocalState();
+			Element comingElement = data.getElement();
+			if (!(comingElement instanceof EClass)) {
+				return false;
+			}
+			EClass clazz = (EClass) comingElement;
+			if (manager.hasClass(clazz)) {
+				return false;
+			}
+
 			switch (ev.getAction()) {
+				case DragEvent.ACTION_DRAG_STARTED:
+					break;
 				case DragEvent.ACTION_DRAG_ENTERED:
 					break;
 				case DragEvent.ACTION_DRAG_LOCATION:
@@ -77,42 +95,29 @@ public class MainFragment extends Fragment {
 				case DragEvent.ACTION_DRAG_EXITED:
 					break;
 				case DragEvent.ACTION_DROP:
-					ClassNodeView node;
+					// modify the model
+					manager.addClass(clazz);
+					// create new class element view
+					ClassView view = ViewFactory.createClassView(getActivity());
+					view.setViewModel(new ClassViewModel(clazz));
+					// for start dragging this class title
+					view.setOnLongClickListenerForTitleView(new ElementViewOnLongClickListener());
+					// for move the class view
+					// node.setOnTouchListener(new ClassOnTouchListener());
+					// for create reference
+					view.setOnDragListener(mClassOnDragListener);
+					// for add attribute
+					view.setOnDragListenerForAttrSection(mAttrSectionOnDragListener);
 
-					DragData data = (DragData) ev.getLocalState();
-					Element comingElement = data.getElement();
-					if (comingElement instanceof EClass) {
-						// this is a move operation
-						node = (ClassNodeView) data.getSourceView();
-					} else {
-						// need to create new EClass
-						if (!manager.canConsumeClass(comingElement)) {
-							// class of same name may have existed
-							break;
-						}
+					view.setTag(clazz);
+					ViewGroup group = (ViewGroup) v;
+					view.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+					group.addView(view);
 
-						EClass clazz = manager.consumeClass(comingElement);
-						// remove source view from its parent if any
-						View source = data.getSourceView();
-						if (source != null) {
-							ViewGroup parent = (ViewGroup) source.getParent();
-							parent.removeView(source);
-						}
-						// create new class element view
-						node = ClassNodeView.create(getActivity());
-						node.setOnLongClickListener(mElementLongClickListener);
-						node.setOnDragListener(mClassOnDragListener);
-						node.setOnDragListenerForTitle(mClassTitleOnDragListener);
-						node.setOnDragListenerForSection(0, mAttrSectionOnDragListener);
-						node.setTitle(clazz.getName());
-						node.setTag(clazz);
-						ViewGroup group = (ViewGroup) v;
-						node.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
-						group.addView(node);
-					}
-					float x = (ev.getX() - node.getMeasuredWidth() / 2);
-					float y = (ev.getY() - node.getMeasuredHeight() / 2);
-					node.moveTo(x, y);
+					float x = (ev.getX() - view.getMeasuredWidth() / 2);
+					float y = (ev.getY() - view.getMeasuredHeight() / 2);
+					view.moveTo(x, y);
+					data.complete(true);
 					break;
 			}
 			return true;
@@ -121,7 +126,7 @@ public class MainFragment extends Fragment {
 
 	/**
 	 * @author difujia
-	 *         Handles dragging another ClassElementView to this.
+	 *         Handles creating reference between two classes.
 	 */
 	class ClassOnDragListener implements OnDragListener {
 
@@ -129,51 +134,69 @@ public class MainFragment extends Fragment {
 		public boolean onDrag(View v, DragEvent ev) {
 			DragData data = (DragData) ev.getLocalState();
 			Element comingElement = data.getElement();
-			EClass myClazz = (EClass) v.getTag();
-
-			if (manager.allowConnect(myClazz, comingElement) == false) {
-				// a workaround for a issue that child view returns true in OnDrag,
-				// parent view won't receive start and end event,
-				// but still get other events.
+			if (!(comingElement instanceof EClass)) {
 				return false;
 			}
+			EClass thatClass = (EClass) data.getElement();
+			if (!manager.hasClass(thatClass)) {
+				return false;
+			}
+			EClass thisClass = (EClass) v.getTag();
+			ClassView self = (ClassView) v;
 
 			switch (ev.getAction()) {
 				case DragEvent.ACTION_DRAG_STARTED:
+					self.onNotify();
 					break;
 				case DragEvent.ACTION_DRAG_ENTERED:
-					v.setBackgroundResource(R.drawable.bg_class_highlight);
+					// TODO connect two views with dash line
+					self.onHover();
 					break;
 				case DragEvent.ACTION_DRAG_LOCATION:
 					break;
 				case DragEvent.ACTION_DRAG_EXITED:
-					v.setBackgroundResource(R.drawable.bg_class);
+					// TODO remove dash line
+					self.onNotify();
 					break;
 				case DragEvent.ACTION_DROP:
-					if (BuildConfig.DEBUG) {
-						Log.d(LOG, "drop in class");
-					}
-					ClassNodeView that = (ClassNodeView) data.getSourceView();
-					ClassNodeView self = (ClassNodeView) v;
+					ClassView that = (ClassView) data.getSourceView().getParent();
 					if (self != that) {
-						LinkView link = new LinkView(getActivity());
-						TextView labelForSelf = ViewFactory.createLabel(getActivity());
-						labelForSelf.setOnDragListener(mRefOnDragListener);
-						TextView labelForThat = ViewFactory.createLabel(getActivity());
-						labelForThat.setOnDragListener(mRefOnDragListener);
-						canvas.addView(labelForSelf, 0);
-						canvas.addView(labelForThat, 0);
-						canvas.addView(link, 0);
-						LinkBinder binder = new LinkBinder(self, labelForSelf, that, labelForThat, link);
-						self.addNodeListener(binder);
-						that.addNodeListener(binder);
+						if (manager.isReferenced(thisClass, thatClass)) {
+							// TODO two classes already cross-referenced
+						} else {
+							EReference selfToThat = manager.makeRefBetween(thisClass, thatClass);
+							EReference thatToSelf = manager.makeRefBetween(thatClass, thisClass);
+							manager.pairRefs(selfToThat, thatToSelf);
+
+							LinkView link = new LinkView(getActivity());
+
+							ElementView labelForSelf = ViewFactory.createRefLabelView(getActivity());
+							labelForSelf.setTag(selfToThat.getInfo());
+							labelForSelf.setOnDragListener(new RefLabelOnDragListener(selfToThat));
+
+							ElementView labelForThat = ViewFactory.createRefLabelView(getActivity());
+							labelForThat.setTag(thatToSelf.getInfo());
+							labelForThat.setOnDragListener(new RefLabelOnDragListener(thatToSelf));
+
+							mCanvas.addView(labelForSelf, 0);
+							mCanvas.addView(labelForThat, 0);
+
+							mCanvas.addView(link, 0);
+							LinkBinder binder = new LinkBinder(self, labelForSelf, that, labelForThat, link);
+							self.registerNodeListener(binder);
+							labelForSelf.registerNodeListener(binder);
+							that.registerNodeListener(binder);
+							labelForThat.registerNodeListener(binder);
+						}
 					} else {
 						// TODO implement create ref to self
 
 					}
+					data.complete(true);
 					break;
 				case DragEvent.ACTION_DRAG_ENDED:
-					v.setBackgroundResource(R.drawable.bg_class);
+					// TODO remove dash line
+					self.onFinish();
 					break;
 			}
 			return true;
@@ -181,149 +204,116 @@ public class MainFragment extends Fragment {
 
 	}
 
-	class ClassTitleOnDragListener implements OnDragListener {
+	class RefLabelOnDragListener implements OnDragListener {
 
-		@Override
-		public boolean onDrag(View v, DragEvent ev) {
-			DragData data = (DragData) ev.getLocalState();
-			Element comingElement = data.getElement();
-			EClass myClazz = (EClass) v.getTag();
-			switch (ev.getAction()) {
-				case DragEvent.ACTION_DRAG_STARTED:
-					boolean canCopy = manager.allowCopyName(comingElement, myClazz);
-					return canCopy;
-				case DragEvent.ACTION_DRAG_ENTERED:
-					v.setBackgroundResource(R.drawable.bg_section_highlight);
-					break;
-				case DragEvent.ACTION_DRAG_LOCATION:
-					break;
-				case DragEvent.ACTION_DRAG_EXITED:
-					v.setBackgroundResource(R.drawable.bg_section);
-					break;
-				case DragEvent.ACTION_DROP:
-					manager.copyName(comingElement, myClazz);
-					if (comingElement.isDestroyed()) {
-						// remove its view
-						ViewGroup parent = (ViewGroup) data.getSourceView().getParent();
-						parent.removeView(data.getSourceView());
-					}
-					ElementView title = (ElementView) v;
-					title.setText(myClazz.getName());
-					break;
-				case DragEvent.ACTION_DRAG_ENDED:
-					v.setBackgroundResource(R.drawable.bg_section);
-					break;
-			}
-			return true;
+		EReference mRef;
+
+		public RefLabelOnDragListener(EReference ref) {
+			mRef = ref;
 		}
 
-	}
-
-	class RefOnDragListener implements OnDragListener {
-
 		@Override
 		public boolean onDrag(View v, DragEvent ev) {
-			// TODO Auto-generated method stub
 			DragData data = (DragData) ev.getLocalState();
 			Element comingElement = data.getElement();
-			if (comingElement instanceof EClass) {
+			if (!(comingElement instanceof EReferenceInfo)) {
 				return false;
 			}
+			EReferenceInfo newInfo = (EReferenceInfo) comingElement;
+			final ElementView self = (ElementView) v;
 			switch (ev.getAction()) {
 				case DragEvent.ACTION_DRAG_STARTED:
-					// do nothing?
+					self.onNotify();
 					break;
 				case DragEvent.ACTION_DRAG_ENTERED:
-					v.setBackgroundResource(R.drawable.bg_label_highlight);
+					self.onHover();
 					break;
 				case DragEvent.ACTION_DRAG_LOCATION:
 					break;
 				case DragEvent.ACTION_DRAG_EXITED:
-					v.setBackgroundResource(R.drawable.bg_label);
+					self.onNotify();
 					break;
 				case DragEvent.ACTION_DROP:
+					EReferenceInfo oldInfo = manager.swapReferenceInfo(mRef, newInfo);
+					oldInfo.recycle();
+					self.setViewModel(new ReferenceInfoViewModel(newInfo));
+					self.setTag(newInfo);
+					self.setOnLongClickListener(new ElementViewOnLongClickListener().with(new CompletionHandler() {
+						@Override
+						public void complete(boolean consumed) {
+							if (consumed) {
+								EReferenceInfo placeHolder = ModelFactory.getPlaceHolder();
+								manager.swapReferenceInfo(mRef, placeHolder);
+								self.setViewModel(new ReferenceInfoViewModel(placeHolder));
+								self.setTag(placeHolder);
+								self.setLongClickable(false);
+							}
+						}
+					}));
+					data.complete(true);
 					break;
 				case DragEvent.ACTION_DRAG_ENDED:
-					v.setBackgroundResource(R.drawable.bg_label);
+					self.onFinish();
 					break;
 			}
-			return false;
+			return true;
 		}
 
 	}
 
-	class SectionOnDragListener implements OnDragListener {
+	class AttrSectionOnDragListener implements OnDragListener {
 
 		@Override
 		public boolean onDrag(View v, DragEvent ev) {
 			DragData data = (DragData) ev.getLocalState();
 			Element comingElement = data.getElement();
-			EClass myClazz = (EClass) v.getTag();
+			if (!(comingElement instanceof EAttribute)) {
+				return false;
+			}
+			EAttribute attr = (EAttribute) comingElement;
+			EClass thisClass = (EClass) v.getTag();
+			final SectionView thisSection = (SectionView) v;
 
 			switch (ev.getAction()) {
 				case DragEvent.ACTION_DRAG_STARTED:
-					boolean isAllowed = manager.allowAddAttrToClass(comingElement, myClazz);
-					return isAllowed;
+					thisSection.onNotify();
+					break;
 				case DragEvent.ACTION_DRAG_ENTERED:
-					v.setBackgroundResource(R.drawable.bg_section_highlight);
+					thisSection.onHover();
 					break;
 				case DragEvent.ACTION_DRAG_EXITED:
-					v.setBackgroundResource(R.drawable.bg_section);
+					thisSection.onNotify();
 					break;
 				case DragEvent.ACTION_DROP:
-					ElementView elementView = (ElementView) data.getSourceView();
-					if (elementView != null) {
-						ViewGroup parent = (ViewGroup) elementView.getParent();
-						if (v == parent) {
-							// drop in the same section, do nothing
-							break;
-						} else {
-							// drag from another section, remove it
-							parent.removeView(elementView);
-						}
-
+					ElementView sourceView = (ElementView) data.getSourceView();
+					ViewGroup sourceParent = (ViewGroup) sourceView.getParent();
+					if (sourceParent == v) {
+						// drop in the same section, do nothing
+						break;
 					}
 
-					EAttribute attr = manager.addAttrToClass(comingElement, myClazz);
+					manager.addAttrToClass(attr, thisClass);
+					final ElementView attrView;
+					attrView = ViewFactory.createSectionItemView(getActivity());
+					attrView.setViewModel(new AttributeViewModel(attr));
+					attrView.setTag(attr);
+					attrView.setOnLongClickListener(new ElementViewOnLongClickListener().with(new CompletionHandler() {
 
-					if (attr != null) {
-						// add new ElementView
-						if (elementView == null) {
-							elementView = new ElementView(getActivity());
-							elementView.setOnLongClickListener(mElementLongClickListener);
+						@Override
+						public void complete(boolean consumed) {
+							if (consumed) {
+								thisSection.removeView(attrView);
+							}
 						}
-						elementView.setTag(attr);
-						elementView.setText(attr.getName());
-						ViewGroup section = (ViewGroup) v;
-						section.addView(elementView);
-					}
+					}));
+
+					thisSection.addView(attrView);
+					data.complete(true);
 					break;
 				case DragEvent.ACTION_DRAG_ENDED:
-					v.setBackgroundResource(R.drawable.bg_section);
+					thisSection.onFinish();
 					break;
 			}
-			return true;
-		}
-	}
-
-	class ElementViewOnLongClickListener implements OnLongClickListener {
-		@Override
-		public boolean onLongClick(View v) {
-			DragShadowBuilder shadowBuilder = new DragShadowBuilder(v);
-			DragData data = new DragDataBuilder().setElement((Element) v.getTag()).setSourceView(v).build();
-			v.startDrag(null, shadowBuilder, data, 0);
-			return true;
-		}
-	}
-
-	class TextElementOnLongClickListener implements OnLongClickListener {
-
-		@Override
-		public boolean onLongClick(View v) {
-			DragShadowBuilder shadowBuilder = new DragShadowBuilder(v);
-			EText text = (EText) v.getTag();
-			DragData data = new DragDataBuilder().setElement(text).build();
-			v.startDrag(null, shadowBuilder, data, 0);
 			return true;
 		}
 	}

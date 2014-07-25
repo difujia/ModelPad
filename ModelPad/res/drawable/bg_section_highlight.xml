@@ -6,16 +6,16 @@
 
     <solid android:color="@color/white" />
 
+    <stroke
+        android:dashGap="@dimen/border_stroke_dashgap"
+        android:dashWidth="@dimen/border_stroke_dashwidth"
+        android:width="@dimen/border_stroke_width"
+        android:color="@color/greenlight" />
+
     <padding
         android:bottom="@dimen/section_padding"
         android:left="@dimen/section_padding"
         android:right="@dimen/section_padding"
         android:top="@dimen/section_padding" />
-
-    <stroke
-        android:dashGap="3dp"
-        android:dashWidth="6dp"
-        android:width="1dp"
-        android:color="@color/bluelight" />
 
 </shape>

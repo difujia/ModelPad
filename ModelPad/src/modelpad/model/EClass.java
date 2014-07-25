@@ -1,7 +1,8 @@
 package modelpad.model;
 
 import java.util.HashSet;
-import java.util.Set;
+
+import com.google.common.base.Objects.ToStringHelper;
 
 public class EClass extends Element {
 
@@ -9,13 +10,21 @@ public class EClass extends Element {
 		super(name);
 	}
 
-	private Set<EClass> superTypes = new HashSet<>();
-	private Set<EAttribute> attributes = new HashSet<>();
-	private Set<EReference> references = new HashSet<>();
+	private HashSet<EClass> superTypes = new HashSet<>();
+	private HashSet<EAttribute> attributes = new HashSet<>();
+	private HashSet<EReference> references = new HashSet<>();
 
-//	void copyNameFrom(Element source) {
-//		this.names = source.names;
-//	}
+	EClass[] getSuperTypes() {
+		return superTypes.toArray(new EClass[superTypes.size()]);
+	}
+
+	EAttribute[] getAttributes() {
+		return attributes.toArray(new EAttribute[attributes.size()]);
+	}
+
+	EReference[] getReferences() {
+		return references.toArray(new EReference[references.size()]);
+	}
 
 	boolean addSuperType(EClass superType) {
 		if (superType == this) {
@@ -29,10 +38,17 @@ public class EClass extends Element {
 	}
 
 	boolean addAttr(EAttribute attr) {
+		if (hasAttr(attr))
+			return false;
+		attr.removeFromOwner();
+		attr.setOwner(this);
 		return attributes.add(attr);
 	}
 
 	boolean removeAttr(EAttribute attr) {
+		if (!hasAttr(attr))
+			return false;
+		attr.setOwner(null);
 		return attributes.remove(attr);
 	}
 
@@ -49,14 +65,25 @@ public class EClass extends Element {
 	}
 
 	@Override
+	protected ToStringHelper toStringHelper() {
+		return super.toStringHelper().add("superTypes", superTypes).add("attrs", attributes).add("refs", references);
+	}
+
+	@Override
 	public void recycle() {
-		super.recycle();
+		for (EClass superType : superTypes) {
+			superType.recycle();
+		}
+		for (EAttribute attr : attributes) {
+			attr.recycle();
+		}
+		for (EReference ref : references) {
+			ref.recycle();
+		}
 		superTypes.clear();
-		superTypes = null;
 		attributes.clear();
-		attributes = null;
 		references.clear();
-		references = null;
+		super.recycle();
 	}
 
 }

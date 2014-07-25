@@ -1,85 +1,27 @@
 package modelpad.model;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 public class ElementManager {
 
-	public interface ModelChangeListener {
-		void classCreated(EClass newClazz);
+	private Solution mSolution = new Solution();
 
-		void classNameChanged(EClass clazz);
-
-		void classHasNewAttr(EClass clazz, EAttribute attr);
-
-		void classLostAttr(EClass clazz, EAttribute attr);
+	public boolean hasClass(EClass clazz) {
+		return mSolution.hasEClass(clazz);
 	}
 
-	private Level level;
-	private List<EClass> allClasses = new ArrayList<>();
-	private List<EClass> allConsumedClasses = new ArrayList<>();
-	private List<EAttribute> allAttrs = new ArrayList<>();
-	private List<EAttribute> allConsumedAttrs = new ArrayList<>();
-
-	public ElementManager(Level level) {
-		this.level = level;
-		String[] classNames = level.getAllClassNames();
-		for (String className : classNames) {
-			EClass clazz = new EClass(className);
-			allClasses.add(clazz);
+	public void addClass(EClass clazz) {
+		if (hasClass(clazz)) {
+			throw new IllegalStateException("Class already in use");
 		}
-		String[] attrNames = level.getAllAttrNames();
-		for (String attrName : attrNames) {
-			EAttribute attr = new EAttribute(attrName);
-			allAttrs.add(attr);
+		mSolution.addEClass(clazz);
+	}
+
+	public void removeClass(EClass clazz) {
+		if (!hasClass(clazz)) {
+			throw new IllegalStateException("Class not in use");
 		}
+		mSolution.removeEClass(clazz);
+		clazz.recycle();
 	}
-
-	// public boolean allowCopyName(Element from, EClass to) {
-	// return !(from instanceof EClass);
-	// }
-	//
-	// public void copyName(Element from, EClass to) {
-	// if (allowCopyName(from, to) == false) {
-	// throw new IllegalArgumentException();
-	// }
-	// to.copyNameFrom(from);
-	// from.recycle();
-	// }
-
-	public EClass[] getAllClasses() {
-		return allClasses.toArray(new EClass[allClasses.size()]);
-	}
-
-	public EClass[] getAllConsumedClasses() {
-		return allConsumedClasses.toArray(new EClass[allConsumedClasses.size()]);
-	}
-
-	public EAttribute[] getAllAttrs() {
-		return allAttrs.toArray(new EAttribute[allAttrs.size()]);
-	}
-
-	public EAttribute[] getAllConsumedAttrs() {
-		return allConsumedAttrs.toArray(new EAttribute[allConsumedAttrs.size()]);
-	}
-
-	public boolean canConsumeClass(EClass clazz) {
-		return !allConsumedClasses.contains(clazz);
-	}
-
-	public EClass consumeClass(EClass clazz) {
-		if (canConsumeClass(clazz) == false) {
-			throw new IllegalArgumentException();
-		}
-		allConsumedClasses.add(clazz);
-		return clazz;
-	}
-
-//	public boolean allowAddAttrToClass(Element material, EClass receiver) {
-//		return !(material instanceof EClass);
-//	}
 
 	/**
 	 * Always remove attr from its origin, the receiver may ignore the attr if it has duplicates.
@@ -88,29 +30,18 @@ public class ElementManager {
 	 * @param receiver
 	 * @return
 	 */
-	public EAttribute addAttrToClass(EAttribute attr, EClass receiver) {
-//		if (allowAddAttrToClass(material, receiver) == false) {
-//			throw new IllegalArgumentException();
-//		}
+	public void addAttrToClass(EAttribute attr, EClass receiver) {
 
-			if (!attr.isOwnedBy(receiver)) {
-				attr.removeFromOwner();
-				receiver.addAttr(attr)
-			}
-
-
-		boolean hadAlready = receiver.hasAttr(attr);
-		if (hadAlready) {
-			return null;
-		} else {
+		if (!attr.isOwnedBy(receiver)) {
+			attr.removeFromOwner();
 			receiver.addAttr(attr);
 			attr.setOwner(receiver);
-			return attr;
 		}
 	}
 
 	public void removeAttr(EAttribute attr) {
-
+		attr.removeFromOwner();
+		attr.recycle();
 	}
 
 	public boolean allowConnect(Element left, Element right) {
@@ -125,5 +56,38 @@ public class ElementManager {
 	public boolean allowInherit(Element superType, Element subType) {
 		// TODO check super types
 		return (subType instanceof EClass) && (superType instanceof EClass);
+	}
+
+	public EReference makeRefBetween(EClass from, EClass to) {
+		EReference ref = new EReference(from, to);
+		from.addRef(ref);
+		return ref;
+	}
+
+	public void pairRefs(EReference ref1, EReference ref2) {
+		ref1.removeOpposite();
+		ref2.removeOpposite();
+		ref1.setOpposite(ref2);
+		ref2.setOpposite(ref1);
+	}
+
+	public boolean isReferenced(EClass left, EClass right) {
+		for (EReference ref : left.getReferences()) {
+			if (ref.getTarget().equals(right)) {
+				return true;
+			}
+		}
+		for (EReference ref : right.getReferences()) {
+			if (ref.getTarget().equals(left)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public EReferenceInfo swapReferenceInfo(EReference target, EReferenceInfo newInfo) {
+		EReferenceInfo oldInfo = target.getInfo();
+		target.setInfo(newInfo);
+		return oldInfo;
 	}
 }

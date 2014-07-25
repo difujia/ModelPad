@@ -2,20 +2,20 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle" >
 
-    <corners android:radius="5dp" />
+    <corners android:radius="3dp" />
 
     <solid android:color="@color/white" />
-
-    <padding
-        android:bottom="@dimen/class_padding_bottom"
-        android:left="@dimen/class_padding"
-        android:right="@dimen/class_padding"
-        android:top="@dimen/class_padding" />
 
     <stroke
         android:dashGap="@dimen/border_stroke_dashgap"
         android:dashWidth="@dimen/border_stroke_dashwidth"
         android:width="@dimen/border_stroke_width"
         android:color="@color/greenlight" />
+
+    <padding
+        android:bottom="@dimen/element_padding"
+        android:left="@dimen/element_padding"
+        android:right="@dimen/element_padding"
+        android:top="@dimen/element_padding" />
 
 </shape>
