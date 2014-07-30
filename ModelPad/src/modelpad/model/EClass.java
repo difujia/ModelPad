@@ -70,20 +70,21 @@ public class EClass extends Element {
 	}
 
 	@Override
-	public void recycle() {
-		for (EClass superType : superTypes) {
-			superType.recycle();
+	public void dispose() {
+		for (EAttribute attr : attributes.toArray(new EAttribute[attributes.size()])) {
+			attr.dispose();
 		}
-		for (EAttribute attr : attributes) {
-			attr.recycle();
-		}
-		for (EReference ref : references) {
-			ref.recycle();
+
+		for (EReference ref : references.toArray(new EReference[references.size()])) {
+			if (ref.getOpposite() != null) {
+				ref.getOpposite().dispose();
+			}
+			ref.dispose();
 		}
 		superTypes.clear();
 		attributes.clear();
 		references.clear();
-		super.recycle();
+		super.dispose();
 	}
 
 }

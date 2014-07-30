@@ -9,13 +9,17 @@ import modelpad.model.EClass;
 import modelpad.model.EReference;
 import modelpad.model.EReferenceInfo;
 import modelpad.model.Element;
-import modelpad.model.ModelFactory;
-import modelpad.model.ElementManager;
 import modelpad.model.Level;
-import modelpad.model.ReferenceInfoViewModel;
+import modelpad.model.ModelFactory;
+import modelpad.model.ReferenceViewModel;
+import modelpad.model.SolutionManager;
+import modelpad.utils.ElementAnchor;
+import modelpad.utils.LinkAnchor;
 import modelpad.view.ClassView;
+import modelpad.view.CompositeStateResponder;
 import modelpad.view.ElementView;
 import modelpad.view.LinkBinder;
+import modelpad.view.LinkTouchDelegateView;
 import modelpad.view.LinkView;
 import modelpad.view.SectionView;
 import modelpad.view.ViewFactory;
@@ -24,7 +28,6 @@ import android.os.Bundle;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.view.View.OnDragListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -36,38 +39,35 @@ public class MainFragment extends Fragment {
 	static final String LOG = "MainFragment";
 
 	private FrameLayout mCanvas;
-	private PinnedSectionListView mElementList;
-	private ElementSectionListAdapter mElementListAdapter;
 
 	private final ClassOnDragListener mClassOnDragListener = new ClassOnDragListener();
 	private final AttrSectionOnDragListener mAttrSectionOnDragListener = new AttrSectionOnDragListener();
 
-	final ElementManager manager = new ElementManager();
+	final SolutionManager manager = new SolutionManager();
 	final Level mLevel = new Level();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View root = inflater.inflate(R.layout.fragment_main, container, false);
-		// panel = (LinearLayout) root.findViewById(R.id.panel);
-		mCanvas = (FrameLayout) root.findViewById(R.id.canvas);
-		mElementList = (PinnedSectionListView) root.findViewById(R.id.panel_element_list);
 		return root;
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 
-		mElementListAdapter = new ElementSectionListAdapter(getActivity());
-		mElementListAdapter.addSectionObject(ModelFactory.getHeaderClass());
-		mElementListAdapter.addSectionObject(ModelFactory.getHeaderAttr());
-		mElementListAdapter.addSectionObject(ModelFactory.getHeaderRef());
+		ElementSectionListAdapter adapter = new ElementSectionListAdapter(getActivity());
+		adapter.addSectionObject(ModelFactory.getHeaderClass());
+		adapter.addSectionObject(ModelFactory.getHeaderAttr());
+		adapter.addSectionObject(ModelFactory.getHeaderRef());
 
-		mElementListAdapter.addAll(mLevel.getAllClasses());
-		mElementListAdapter.addAll(mLevel.getAllAttrs());
-		mElementListAdapter.addAll(mLevel.getAllRefs());
+		adapter.addAll(mLevel.getAllClasses());
+		adapter.addAll(mLevel.getAllAttrs());
+		adapter.addAll(mLevel.getAllRefs());
 
-		mElementList.setAdapter(mElementListAdapter);
+		PinnedSectionListView listView = (PinnedSectionListView) getView().findViewById(R.id.panel_element_list);
+		listView.setAdapter(adapter);
 
+		mCanvas = (FrameLayout) getView().findViewById(R.id.canvas);
 		mCanvas.setOnDragListener(new CanvasOnDragListener());
 		super.onActivityCreated(savedInstanceState);
 	}
@@ -98,25 +98,37 @@ public class MainFragment extends Fragment {
 					// modify the model
 					manager.addClass(clazz);
 					// create new class element view
-					ClassView view = ViewFactory.createClassView(getActivity());
-					view.setViewModel(new ClassViewModel(clazz));
+					final ClassView classView = ViewFactory.createClassView(getActivity());
+					classView.setViewModel(new ClassViewModel(clazz));
 					// for start dragging this class title
-					view.setOnLongClickListenerForTitleView(new ElementViewOnLongClickListener());
+					classView.setOnLongClickListenerForTitleView(new ElementLongClickToDragListener());
 					// for move the class view
-					// node.setOnTouchListener(new ClassOnTouchListener());
 					// for create reference
-					view.setOnDragListener(mClassOnDragListener);
+					classView.setOnDragListener(mClassOnDragListener);
 					// for add attribute
-					view.setOnDragListenerForAttrSection(mAttrSectionOnDragListener);
+					classView.setOnDragListenerForAttrSection(mAttrSectionOnDragListener);
 
-					view.setTag(clazz);
+					ElementAnchor anchor = new ElementAnchor(classView);
+					classView.setOnClickListenerForTitleView(new ElementClickToRemoveListener(getActivity(), anchor,
+							classView, clazz));
+
+					classView.setTag(clazz);
+					classView.setVisibility(View.INVISIBLE);
 					ViewGroup group = (ViewGroup) v;
-					view.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
-					group.addView(view);
+					group.addView(classView);
+					// classView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
+					final float dropX = ev.getX();
+					final float dropY = ev.getY();
+					classView.post(new Runnable() {
 
-					float x = (ev.getX() - view.getMeasuredWidth() / 2);
-					float y = (ev.getY() - view.getMeasuredHeight() / 2);
-					view.moveTo(x, y);
+						@Override
+						public void run() {
+							float x = (dropX - classView.getWidth() / 2);
+							float y = (dropY - classView.getHeight() / 2);
+							classView.moveTo(x, y);
+							classView.setVisibility(View.VISIBLE);
+						}
+					});
 					data.complete(true);
 					break;
 			}
@@ -146,17 +158,17 @@ public class MainFragment extends Fragment {
 
 			switch (ev.getAction()) {
 				case DragEvent.ACTION_DRAG_STARTED:
-					self.onNotify();
+					self.beActive();
 					break;
 				case DragEvent.ACTION_DRAG_ENTERED:
 					// TODO connect two views with dash line
-					self.onHover();
+					self.beTarget();
 					break;
 				case DragEvent.ACTION_DRAG_LOCATION:
 					break;
 				case DragEvent.ACTION_DRAG_EXITED:
 					// TODO remove dash line
-					self.onNotify();
+					self.beActive();
 					break;
 				case DragEvent.ACTION_DROP:
 					ClassView that = (ClassView) data.getSourceView().getParent();
@@ -168,21 +180,35 @@ public class MainFragment extends Fragment {
 							EReference thatToSelf = manager.makeRefBetween(thatClass, thisClass);
 							manager.pairRefs(selfToThat, thatToSelf);
 
-							LinkView link = new LinkView(getActivity());
-
 							ElementView labelForSelf = ViewFactory.createRefLabelView(getActivity());
-							labelForSelf.setTag(selfToThat.getInfo());
 							labelForSelf.setOnDragListener(new RefLabelOnDragListener(selfToThat));
+							labelForSelf.setViewModel(new ReferenceViewModel(selfToThat));
 
 							ElementView labelForThat = ViewFactory.createRefLabelView(getActivity());
-							labelForThat.setTag(thatToSelf.getInfo());
 							labelForThat.setOnDragListener(new RefLabelOnDragListener(thatToSelf));
+							labelForThat.setViewModel(new ReferenceViewModel(thatToSelf));
 
 							mCanvas.addView(labelForSelf, 0);
 							mCanvas.addView(labelForThat, 0);
 
-							mCanvas.addView(link, 0);
-							LinkBinder binder = new LinkBinder(self, labelForSelf, that, labelForThat, link);
+							// link
+							LinkView linkView = new LinkView(getActivity());
+							CompositeStateResponder responders = new CompositeStateResponder(labelForSelf,
+									labelForThat, linkView);
+
+							// click delegate view
+							LinkTouchDelegateView touchArea = new LinkTouchDelegateView(getActivity());
+							LinkAnchor anchor = new LinkAnchor(touchArea);
+							touchArea.setOnClickListener(new ElementClickToRemoveListener(getActivity(), anchor,
+									responders, selfToThat, thatToSelf));
+							mCanvas.addView(touchArea, 0);
+							mCanvas.addView(linkView, 0);
+
+							selfToThat.registerObserver(linkView.getObserver(), touchArea.getObserver());
+							thatToSelf.registerObserver(linkView.getObserver(), touchArea.getObserver());
+
+							LinkBinder binder = new LinkBinder(self, labelForSelf, that, labelForThat, linkView,
+									touchArea);
 							self.registerNodeListener(binder);
 							labelForSelf.registerNodeListener(binder);
 							that.registerNodeListener(binder);
@@ -196,12 +222,11 @@ public class MainFragment extends Fragment {
 					break;
 				case DragEvent.ACTION_DRAG_ENDED:
 					// TODO remove dash line
-					self.onFinish();
+					self.beNormal();
 					break;
 			}
 			return true;
 		}
-
 	}
 
 	class RefLabelOnDragListener implements OnDragListener {
@@ -223,37 +248,43 @@ public class MainFragment extends Fragment {
 			final ElementView self = (ElementView) v;
 			switch (ev.getAction()) {
 				case DragEvent.ACTION_DRAG_STARTED:
-					self.onNotify();
+					self.beActive();
 					break;
 				case DragEvent.ACTION_DRAG_ENTERED:
-					self.onHover();
+					self.beTarget();
 					break;
 				case DragEvent.ACTION_DRAG_LOCATION:
 					break;
 				case DragEvent.ACTION_DRAG_EXITED:
-					self.onNotify();
+					self.beActive();
 					break;
 				case DragEvent.ACTION_DROP:
-					EReferenceInfo oldInfo = manager.swapReferenceInfo(mRef, newInfo);
-					oldInfo.recycle();
-					self.setViewModel(new ReferenceInfoViewModel(newInfo));
+					ElementView sourceView = (ElementView) data.getSourceView();
+					if (sourceView == v) {
+						// drop in the same section, do nothing
+						break;
+					}
+					manager.changeReferenceInfo(mRef, newInfo);
 					self.setTag(newInfo);
-					self.setOnLongClickListener(new ElementViewOnLongClickListener().with(new CompletionHandler() {
+
+					ElementAnchor anchor = new ElementAnchor(self);
+					self.setOnClickListener(new ElementClickToRemoveListener(getActivity(), anchor, self, newInfo));
+
+					self.setOnLongClickListener(new ElementLongClickToDragListener().with(new CompletionHandler() {
 						@Override
 						public void complete(boolean consumed) {
 							if (consumed) {
-								EReferenceInfo placeHolder = ModelFactory.getPlaceHolder();
-								manager.swapReferenceInfo(mRef, placeHolder);
-								self.setViewModel(new ReferenceInfoViewModel(placeHolder));
-								self.setTag(placeHolder);
+								EReferenceInfo placeHolder = ModelFactory.createPlaceHolder();
+								manager.changeReferenceInfo(mRef, placeHolder);
 								self.setLongClickable(false);
+								self.setClickable(false);
 							}
 						}
 					}));
 					data.complete(true);
 					break;
 				case DragEvent.ACTION_DRAG_ENDED:
-					self.onFinish();
+					self.beNormal();
 					break;
 			}
 			return true;
@@ -276,13 +307,13 @@ public class MainFragment extends Fragment {
 
 			switch (ev.getAction()) {
 				case DragEvent.ACTION_DRAG_STARTED:
-					thisSection.onNotify();
+					thisSection.beActive();
 					break;
 				case DragEvent.ACTION_DRAG_ENTERED:
-					thisSection.onHover();
+					thisSection.beTarget();
 					break;
 				case DragEvent.ACTION_DRAG_EXITED:
-					thisSection.onNotify();
+					thisSection.beActive();
 					break;
 				case DragEvent.ACTION_DROP:
 					ElementView sourceView = (ElementView) data.getSourceView();
@@ -297,7 +328,7 @@ public class MainFragment extends Fragment {
 					attrView = ViewFactory.createSectionItemView(getActivity());
 					attrView.setViewModel(new AttributeViewModel(attr));
 					attrView.setTag(attr);
-					attrView.setOnLongClickListener(new ElementViewOnLongClickListener().with(new CompletionHandler() {
+					attrView.setOnLongClickListener(new ElementLongClickToDragListener().with(new CompletionHandler() {
 
 						@Override
 						public void complete(boolean consumed) {
@@ -307,11 +338,14 @@ public class MainFragment extends Fragment {
 						}
 					}));
 
+					ElementAnchor anchor = new ElementAnchor(attrView);
+					attrView.setOnClickListener(new ElementClickToRemoveListener(getActivity(), anchor, attrView, attr));
+
 					thisSection.addView(attrView);
 					data.complete(true);
 					break;
 				case DragEvent.ACTION_DRAG_ENDED:
-					thisSection.onFinish();
+					thisSection.beNormal();
 					break;
 			}
 			return true;

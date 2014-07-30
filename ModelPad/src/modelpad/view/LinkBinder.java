@@ -3,59 +3,73 @@ package modelpad.view;
 import modelpad.view.LinkView.Orientation;
 import android.graphics.PointF;
 import android.view.View;
-import android.view.ViewParent;
 
 public class LinkBinder implements ViewGeoChangeListener {
 
 	private final String LOG = "LinkBinder";
 
-	protected View anchorA;
-	protected View anchorB;
-	protected View labelA;
-	protected View labelB;
-	protected DynamicLink link;
+	protected View mAnchorA;
+	protected View manchorB;
+	protected View mLabelA;
+	protected View mLabelB;
+	protected View mTouchArea;
+	protected DynamicLink mLink;
 
-	public LinkBinder(View anchorA, View labelA, View anchorB, View labelB, DynamicLink link) {
-		this.anchorA = anchorA;
-		this.anchorB = anchorB;
-		this.labelA = labelA;
-		this.labelB = labelB;
-		this.link = link;
+	public LinkBinder(View anchorA, View labelA, View anchorB, View labelB, DynamicLink link, View touchArea) {
+		mAnchorA = anchorA;
+		manchorB = anchorB;
+		mLabelA = labelA;
+		mLabelB = labelB;
+		mLink = link;
+		mTouchArea = touchArea;
 		// checkParent();
 		measure();
 	}
 
-	public LinkBinder(View anchorA, View anchorB, DynamicLink link) {
-		this(anchorA, null, anchorB, null, link);
+	public LinkBinder(View anchorA, View anchorB, DynamicLink link, View touchArea) {
+		this(anchorA, null, anchorB, null, link, touchArea);
 	}
 
-	private void checkParent() {
-		ViewParent parent = anchorA.getParent();
-		if (parent != anchorB.getParent()) {
-			throw new IllegalStateException("Anchors must have the same parent view!");
-		}
+	public LinkBinder(View anchorA, View anchorB, DynamicLink link) {
+		this(anchorA, null, anchorB, null, link, null);
 	}
 
 	public void measure() {
-		float centerAX = anchorA.getX() + anchorA.getWidth() / 2;
-		float centerAY = anchorA.getY() + anchorA.getHeight() / 2;
-		float centerBX = anchorB.getX() + anchorB.getWidth() / 2;
-		float centerBY = anchorB.getY() + anchorB.getHeight() / 2;
+		float centerAX = mAnchorA.getX() + mAnchorA.getWidth() / 2;
+		float centerAY = mAnchorA.getY() + mAnchorA.getHeight() / 2;
+		float centerBX = manchorB.getX() + manchorB.getWidth() / 2;
+		float centerBY = manchorB.getY() + manchorB.getHeight() / 2;
 		// A -> B
 		PointF vA2B = new PointF(centerBX - centerAX, centerBY - centerAY);
 		// B -> A
 		PointF vB2A = new PointF(centerAX - centerBX, centerAY - centerBY);
 
-		if (labelA != null) {
-			PointF centerLabelA = computeLabelCenter(labelA, anchorA, vA2B);
-			labelA.setX(centerLabelA.x - labelA.getMeasuredWidth() / 2);
-			labelA.setY(centerLabelA.y - labelA.getMeasuredHeight() / 2);
+		// position labelA
+		if (mLabelA != null) {
+			PointF centerLabelA = computeLabelCenter(mLabelA, mAnchorA, vA2B);
+			mLabelA.setX(centerLabelA.x - mLabelA.getMeasuredWidth() / 2);
+			mLabelA.setY(centerLabelA.y - mLabelA.getMeasuredHeight() / 2);
 		}
 
-		if (labelB != null) {
-			PointF centerLabelB = computeLabelCenter(labelB, anchorB, vB2A);
-			labelB.setX(centerLabelB.x - labelB.getMeasuredWidth() / 2);
-			labelB.setY(centerLabelB.y - labelB.getMeasuredHeight() / 2);
+		// position labelB
+		if (mLabelB != null) {
+			PointF centerLabelB = computeLabelCenter(mLabelB, manchorB, vB2A);
+			mLabelB.setX(centerLabelB.x - mLabelB.getMeasuredWidth() / 2);
+			mLabelB.setY(centerLabelB.y - mLabelB.getMeasuredHeight() / 2);
+		}
+
+		// position touch area
+		if (mTouchArea != null) {
+			mTouchArea.post(new Runnable() {
+				
+				@Override
+				public void run() {
+					PointF touchCenter = computeTouchAreaCenter();
+					mTouchArea.setX(touchCenter.x - mTouchArea.getWidth() / 2);
+					mTouchArea.setY(touchCenter.y - mTouchArea.getHeight() / 2);
+					mTouchArea.setVisibility(View.VISIBLE);
+				}
+			});
 		}
 
 		// link
@@ -64,9 +78,9 @@ public class LinkBinder implements ViewGeoChangeListener {
 		int corners = 0;
 		Orientation o = Orientation.Horizontal;
 		if (centerAY < centerBY) {
-			link.update(posX, posY, vA2B, corners, o);
+			mLink.update(posX, posY, vA2B, corners, o);
 		} else {
-			link.update(posX, posY, vB2A, corners, o);
+			mLink.update(posX, posY, vB2A, corners, o);
 		}
 	}
 
@@ -82,14 +96,19 @@ public class LinkBinder implements ViewGeoChangeListener {
 		return result;
 	}
 
-	@Override
-	public void nodeGeoChanged(View node) {
-		measure();
+	private PointF computeTouchAreaCenter() {
+		float centerAX = mAnchorA.getX() + mAnchorA.getWidth() / 2;
+		float centerAY = mAnchorA.getY() + mAnchorA.getHeight() / 2;
+		float centerBX = manchorB.getX() + manchorB.getWidth() / 2;
+		float centerBY = manchorB.getY() + manchorB.getHeight() / 2;
+		PointF result = new PointF();
+		result.x = (centerAX + centerBX) / 2;
+		result.y = (centerAY + centerBY) / 2;
+		return result;
 	}
 
 	@Override
-	public void nodeDestroyed(View node) {
-		// TODO Auto-generated method stub
-
+	public void viewGeoChanged(View v) {
+		measure();
 	}
 }

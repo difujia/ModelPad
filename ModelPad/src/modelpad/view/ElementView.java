@@ -8,9 +8,11 @@ import modelpad.model.ElementViewModel;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class ElementView extends TextView implements DropZone {
+public class ElementView extends TextView implements StateResponder {
 
 	private static final String TAG = "ElementView";
 
@@ -18,6 +20,12 @@ public class ElementView extends TextView implements DropZone {
 	private DataSetObserver mObserver = new DataSetObserver() {
 		public void onChanged() {
 			update();
+		};
+
+		public void onInvalidated() {
+			Log.d(TAG, "remove view: " + mElementVM.getStringDisplay());
+			ViewGroup parent = (ViewGroup) getParent();
+			parent.removeView(ElementView.this);
 		};
 	};
 
@@ -46,10 +54,12 @@ public class ElementView extends TextView implements DropZone {
 
 	private void updateAlpha() {
 		if (getText().length() == 0) {
+			setBackgroundResource(R.drawable.bg_element_blank);
 			setAlpha(0.1f);
 			setMinWidth(80);
 			setMinHeight(36);
 		} else {
+			setBackgroundResource(R.drawable.bg_element_normal);
 			setAlpha(1);
 			setMinWidth(0);
 		}
@@ -66,21 +76,21 @@ public class ElementView extends TextView implements DropZone {
 	}
 
 	@Override
-	public void onNotify() {
+	public void beActive() {
+		setBackgroundResource(R.drawable.bg_element_active);
 		setAlpha(1);
-		setBackgroundResource(R.drawable.bg_element_highlight);
 	}
 
 	@Override
-	public void onHover() {
+	public void beTarget() {
+		setBackgroundResource(R.drawable.bg_element_target);
 		setAlpha(1);
-		setBackgroundResource(R.drawable.bg_element_hover);
 	}
 
 	@Override
-	public void onFinish() {
-		updateAlpha();
+	public void beNormal() {
 		setBackgroundResource(R.drawable.bg_element_normal);
+		updateAlpha();
 	}
 
 	public void registerNodeListener(ViewGeoChangeListener listener) {
@@ -93,7 +103,7 @@ public class ElementView extends TextView implements DropZone {
 
 	public void notifyViewChange() {
 		for (ViewGeoChangeListener l : listeners) {
-			l.nodeGeoChanged(this);
+			l.viewGeoChanged(this);
 		}
 	}
 }

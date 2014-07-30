@@ -1,24 +1,41 @@
 package modelpad.view;
 
-import modelpad.activity.BuildConfig;
+import modelpad.activity.R;
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 
-public class LinkView extends View implements DynamicLink {
+public class LinkView extends View implements DynamicLink, StateResponder {
 
 	public enum Orientation {
 		Unspecified, Horizontal, Vertical
 	}
 
-	private final String LOG = "LinkView";
+	private final String TAG = "LinkView";
 
+	private DataSetObserver mObserver = new DataSetObserver() {
+		public void onInvalidated() {
+			if (semiInvalidated) {
+				Log.d(TAG, "remove linkview");
+				ViewGroup parent = (ViewGroup) getParent();
+				parent.removeView(LinkView.this);
+			} else {
+				semiInvalidated = true;
+			}
+		};
+	};
+
+	private boolean semiInvalidated = false;
 	private PointF vector = new PointF();
 	private PointF from = new PointF();
 	private PointF to = new PointF();
@@ -30,14 +47,25 @@ public class LinkView extends View implements DynamicLink {
 
 	public LinkView(Context context) {
 		this(context, null);
+		init();
 	}
 
 	public LinkView(Context context, AttributeSet attrs) {
 		this(context, attrs, 0);
+		init();
 	}
 
 	public LinkView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		init();
+	}
+
+	private void init() {
+		blackLinePaint();
+	}
+
+	private void blackLinePaint() {
+		paint.reset();
 		paint.setColor(Color.BLACK);
 		paint.setStrokeWidth(strokeWidth);
 		paint.setAntiAlias(true);
@@ -45,6 +73,22 @@ public class LinkView extends View implements DynamicLink {
 		paint.setStyle(Paint.Style.STROKE);
 		paint.setStrokeJoin(Paint.Join.ROUND);
 		paint.setStrokeCap(Paint.Cap.ROUND);
+	}
+
+	private void blueDashLinePaint() {
+		paint.reset();
+		paint.setColor(getResources().getColor(R.color.bluelight));
+		paint.setStrokeWidth(strokeWidth);
+		paint.setPathEffect(new DashPathEffect(new float[] { 6, 6 }, 0));
+		paint.setAntiAlias(true);
+		paint.setDither(true);
+		paint.setStyle(Paint.Style.STROKE);
+		paint.setStrokeJoin(Paint.Join.ROUND);
+		paint.setStrokeCap(Paint.Cap.ROUND);
+	}
+
+	public DataSetObserver getObserver() {
+		return mObserver;
 	}
 
 	@Override
@@ -66,15 +110,7 @@ public class LinkView extends View implements DynamicLink {
 		from.offset(dispX, dispY);
 		to.offset(dispX, dispY);
 
-		if (BuildConfig.DEBUG == false) {
-			Log.d(LOG, "/******** onMeasure ********/");
-			Log.d(LOG, String.format("posX: %f, posY: %f", getX(), getY()));
-			Log.d(LOG, String.format("originX: %f, originY: %f", from.x, from.y));
-			Log.d(LOG, String.format("vectorX: %f, vectorY: %f", vector.x, vector.y));
-			Log.d(LOG, String.format("width: %d, height: %d", getMeasuredWidth(), getMeasuredHeight()));
-			Log.d(LOG, "/******** onMeasure end ********/");
-		}
-//		Log.d(LOG, "measured");
+		// Log.d(LOG, "measured");
 	}
 
 	@Override
@@ -92,7 +128,7 @@ public class LinkView extends View implements DynamicLink {
 		}
 
 		canvas.drawPath(path, paint);
-//		Log.d(LOG, "drawn");
+		// Log.d(LOG, "drawn");
 	}
 
 	private void makeStraightPath() {
@@ -127,7 +163,7 @@ public class LinkView extends View implements DynamicLink {
 
 	@Override
 	public void update(float posX, float posY, PointF vec, int numOfCorners, Orientation o) {
-//		Log.d(LOG, "update: (" + posX + "," + posY + ") v: (" + vec.x + "," + vec.y + ")");
+		// Log.d(LOG, "update: (" + posX + "," + posY + ") v: (" + vec.x + "," + vec.y + ")");
 		setX(posX);
 		setY(posY);
 		this.vector.set(vec);
@@ -135,5 +171,28 @@ public class LinkView extends View implements DynamicLink {
 		this.orientation = o;
 		requestLayout();
 		invalidate();
+	}
+
+	@Override
+	public void beActive() {
+		// TODO currently no "active" state
+	}
+
+	@Override
+	public void beTarget() {
+		blueDashLinePaint();
+		invalidate();
+	}
+
+	@Override
+	public void beNormal() {
+		blackLinePaint();
+		invalidate();
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		// TODO Auto-generated method stub
+		return super.onTouchEvent(event);
 	}
 }

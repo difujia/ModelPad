@@ -4,6 +4,7 @@ import modelpad.activity.R;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View.MeasureSpec;
+import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.AbsListView.LayoutParams;
 import android.widget.LinearLayout;
@@ -25,6 +26,7 @@ public class ViewFactory {
 		LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		view.setLayoutParams(lp);
 		view.setTextSize(16);
+		view.setGravity(Gravity.CENTER);
 		return view;
 	}
 
@@ -47,7 +49,7 @@ public class ViewFactory {
 		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		view.setLayoutParams(params);
 		view.setTextSize(16);
-		view.setBackgroundColor(Color.LTGRAY);
+//		view.setBackgroundColor(Color.LTGRAY);
 		return view;
 	}
 }

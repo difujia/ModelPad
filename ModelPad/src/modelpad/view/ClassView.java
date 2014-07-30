@@ -20,8 +20,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class ClassView extends LinearLayout implements DropZone {
+public class ClassView extends LinearLayout implements StateResponder {
 
+	private static final String TAG = "ClassView";
 	private ElementView mTitleView;
 	private ViewGroup mAttrSection;
 
@@ -29,7 +30,12 @@ public class ClassView extends LinearLayout implements DropZone {
 	private ClassViewModel mClassVM;
 	private DataSetObserver mObserver = new DataSetObserver() {
 		public void onChanged() {
-			//TODO
+			update();
+		};
+
+		public void onInvalidated() {
+			ViewGroup parent = (ViewGroup) getParent();
+			parent.removeView(ClassView.this);
 		};
 	};
 
@@ -61,7 +67,7 @@ public class ClassView extends LinearLayout implements DropZone {
 		setBackgroundResource(R.drawable.bg_class_normal);
 		// create title view
 		mTitleView = new ElementView(getContext());
-		mTitleView.setBackgroundResource(R.drawable.bg_class_title);
+//		mTitleView.setBackgroundResource(R.drawable.bg_class_title);
 		mTitleView.setTypeface(mTitleView.getTypeface(), Typeface.BOLD);
 		mTitleView.setTextSize(16);
 		mTitleView.setGravity(Gravity.CENTER);
@@ -80,9 +86,9 @@ public class ClassView extends LinearLayout implements DropZone {
 		cornerPaint.setStyle(Style.FILL);
 		cornerPaint.setColor(Color.BLUE);
 	}
-	
+
 	private void update() {
-		// TODO use ViewModel to auto sych the view
+		// TODO use ViewModel to auto sych the view (maybe?)
 	}
 
 	public void setViewModel(ClassViewModel viewModel) {
@@ -92,7 +98,8 @@ public class ClassView extends LinearLayout implements DropZone {
 		}
 		mClassVM = viewModel;
 		mClassVM.registerObserver(mObserver);
-		mTitleView.setViewModel(mClassVM);
+		mTitleView.setViewModel(viewModel);
+		update();
 	}
 
 	public void setOnDragListenerForAttrSection(OnDragListener listener) {
@@ -101,6 +108,10 @@ public class ClassView extends LinearLayout implements DropZone {
 
 	public void setOnLongClickListenerForTitleView(OnLongClickListener listener) {
 		mTitleView.setOnLongClickListener(listener);
+	}
+
+	public void setOnClickListenerForTitleView(OnClickListener listener) {
+		mTitleView.setOnClickListener(listener);
 	}
 
 	public void moveTo(float x, float y) {
@@ -191,22 +202,22 @@ public class ClassView extends LinearLayout implements DropZone {
 
 	public void notifyViewChange() {
 		for (ViewGeoChangeListener l : listeners) {
-			l.nodeGeoChanged(this);
+			l.viewGeoChanged(this);
 		}
 	}
 
 	@Override
-	public void onNotify() {
-		setBackgroundResource(R.drawable.bg_class_highlight);
+	public void beActive() {
+		setBackgroundResource(R.drawable.bg_class_active);
 	}
 
 	@Override
-	public void onHover() {
-		setBackgroundResource(R.drawable.bg_class_hover);
+	public void beTarget() {
+		setBackgroundResource(R.drawable.bg_class_target);
 	}
 
 	@Override
-	public void onFinish() {
+	public void beNormal() {
 		setBackgroundResource(R.drawable.bg_class_normal);
 	}
 }

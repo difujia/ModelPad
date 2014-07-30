@@ -4,12 +4,12 @@
 
     <corners android:radius="3dp" />
 
-    <solid android:color="@color/white" />
-
+    <solid android:color="#E0FFFF"/>
+<!-- 
     <stroke
         android:width="@dimen/border_stroke_width"
         android:color="@color/black" />
-
+ -->
     <padding
         android:bottom="@dimen/element_padding"
         android:left="@dimen/element_padding"

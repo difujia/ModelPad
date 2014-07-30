@@ -1,5 +1,7 @@
 package modelpad.model;
 
+import android.util.Log;
+
 import com.google.common.base.Objects.ToStringHelper;
 
 public class EReference extends Element {
@@ -7,12 +9,14 @@ public class EReference extends Element {
 	private EClass mSource;
 	private EClass mTarget;
 	private EReference mOpposite;
-	private EReferenceInfo mInfo = ModelFactory.getPlaceHolder();
+	private EReferenceInfo mInfo;
 
 	protected EReference(EClass source, EClass target) {
 		super("");
 		mSource = source;
 		mTarget = target;
+		mInfo = ModelFactory.createPlaceHolder();
+		mInfo.setOwner(this);
 	}
 
 	@Override
@@ -20,12 +24,18 @@ public class EReference extends Element {
 		return mInfo.getName();
 	}
 
-	public EReferenceInfo getInfo() {
-		return mInfo;
+	void setInfo(EReferenceInfo info) {
+		EReferenceInfo oldInfo = mInfo;
+		oldInfo.dispose();
+		mInfo = info;
+		mInfo.setOwner(this);
+		notifyDataChanged();
 	}
 
-	void setInfo(EReferenceInfo info) {
-		mInfo = info;
+	void clearInfo() {
+		mInfo = ModelFactory.createPlaceHolder();
+		mInfo.setOwner(this);
+		notifyDataChanged();
 	}
 
 	boolean isContainment() {
@@ -61,14 +71,12 @@ public class EReference extends Element {
 	}
 
 	void setOpposite(EReference opposite) {
+		removeOpposite();
 		mOpposite = opposite;
 	}
 
-	void removeOpposite() {
-		if (mOpposite != null) {
-			mOpposite.setOpposite(null);
-			mOpposite = null;
-		}
+	private void removeOpposite() {
+		mOpposite = null;
 	}
 
 	@Override
@@ -83,16 +91,16 @@ public class EReference extends Element {
 	}
 
 	@Override
-	public void recycle() {
-		mInfo.recycle();
-		mSource.removeRef(this);
+	public void dispose() {
+		super.dispose();
+		mInfo.dispose();
+		mSource.removeRef(this);			
 		mSource = null;
 		mTarget = null;
 		if (mOpposite != null) {
 			mOpposite.removeOpposite();
 			mOpposite = null;
 		}
-		super.recycle();
 	}
 
 }

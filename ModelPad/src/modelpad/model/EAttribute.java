@@ -40,9 +40,9 @@ public class EAttribute extends Element {
 	}
 
 	@Override
-	public void recycle() {
+	public void dispose() {
 		removeFromOwner();
-		super.recycle();
+		super.dispose();
 	}
 
 	@Override
