@@ -1,5 +1,7 @@
 package modelpad.activity;
 
+import modelpad.model.DragData.CompletionHandler;
+import modelpad.model.DragData;
 import modelpad.model.Element;
 import modelpad.utils.Anchor;
 import modelpad.view.StateResponder;
@@ -23,12 +25,18 @@ public class ElementClickToRemoveListener implements OnClickListener {
 	private StateResponder mResponder;
 	private PopupWindow mPopup;
 	private Element[] mElements;
+	private CompletionHandler mHandler = DragData.DummyHandler;
 
 	public ElementClickToRemoveListener(Context context, Anchor anchor, StateResponder responder, Element... elements) {
 		mContext = context;
 		mAnchor = anchor;
 		mResponder = responder;
 		mElements = elements;
+	}
+
+	public ElementClickToRemoveListener with(CompletionHandler handler) {
+		mHandler = handler;
+		return this;
 	}
 
 	@Override
@@ -76,6 +84,7 @@ public class ElementClickToRemoveListener implements OnClickListener {
 					element.dispose();
 				}
 				mPopup.dismiss();
+				mHandler.complete(true);
 			}
 		});
 		return button;

@@ -9,7 +9,12 @@ import android.view.View.OnLongClickListener;
 
 class ElementLongClickToDragListener implements OnLongClickListener {
 
+	private Element mElement;
 	private CompletionHandler mHandler = DragData.DummyHandler;
+
+	public ElementLongClickToDragListener(Element e) {
+		mElement = e;
+	}
 
 	ElementLongClickToDragListener with(CompletionHandler handler) {
 		mHandler = handler;
@@ -19,7 +24,7 @@ class ElementLongClickToDragListener implements OnLongClickListener {
 	@Override
 	public boolean onLongClick(View v) {
 		DragShadowBuilder shadowBuilder = new DragShadowBuilder(v);
-		DragData data = new DragData((Element) v.getTag()).with(v).with(mHandler);
+		DragData data = new DragData(mElement).with(v).with(mHandler);
 		v.startDrag(null, shadowBuilder, data, 0);
 		return true;
 	}

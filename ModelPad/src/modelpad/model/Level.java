@@ -1,11 +1,13 @@
 package modelpad.model;
 
-
 public class Level {
 
-	private String[] classNames = new String[] { "Apple", "Orange", "Banana", "Lemon", "Melon", "Strawberry" };
-	private String[] attrNames = new String[] { "myApple", "myOrange", "myBanana", "myLemon", "myMelon", "myStrawberry" };
-	private String[] refNames = new String[] { "sister", "brother" };
+	private String[] classNames = new String[] { "Bank", "Client", "Account", "Balance" };
+	private String[] attrNames = new String[] { "numOfClients", "numOfAccounts", "balance" };
+	private String[] attrTypes = new String[] { "int", "int", "float" };
+	private String[] refNames = new String[] { "clients", "owner", "accounts", "accounts" };
+	private int[] lowerBounds = new int[] { 0, 1, 0, 0 };
+	private int[] upperBounds = new int[] { 10, 1, 50, 50 };
 	private EClass[] allClasses;
 	private EAttribute[] allAttrs;
 	private EReferenceInfo[] allRefInfos;
@@ -18,12 +20,14 @@ public class Level {
 
 		allAttrs = new EAttribute[attrNames.length];
 		for (int i = 0; i < allAttrs.length; i++) {
-			allAttrs[i] = new EAttribute(attrNames[i], "int");
+			allAttrs[i] = new EAttribute(attrNames[i], attrTypes[i]);
 		}
 
 		allRefInfos = new EReferenceInfo[refNames.length];
 		for (int i = 0; i < allRefInfos.length; i++) {
 			allRefInfos[i] = new EReferenceInfo(refNames[i]);
+			allRefInfos[i].setLowerBound(lowerBounds[i]);
+			allRefInfos[i].setUpperBound(upperBounds[i]);
 		}
 	}
 

@@ -59,7 +59,6 @@ public class ElementSectionListAdapter extends ArrayAdapter<Element> implements 
 
 		final ElementViewModel viewModel = ModelFactory.createViewModel(item);
 		view.setViewModel(viewModel);
-		view.setTag(item);
 
 		if (sectionObjects.contains(item)) {
 			view.setBackgroundColor(Color.YELLOW);
@@ -67,7 +66,7 @@ public class ElementSectionListAdapter extends ArrayAdapter<Element> implements 
 			view.setLongClickable(false);
 		} else {
 			view.setBackgroundColor(Color.WHITE);
-			view.setOnLongClickListener(new ElementLongClickToDragListener().with(new CompletionHandler() {
+			view.setOnLongClickListener(new ElementLongClickToDragListener(item).with(new CompletionHandler() {
 				@Override
 				public void complete(boolean consumed) {
 					if (consumed) {

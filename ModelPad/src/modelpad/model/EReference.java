@@ -1,7 +1,5 @@
 package modelpad.model;
 
-import android.util.Log;
-
 import com.google.common.base.Objects.ToStringHelper;
 
 public class EReference extends Element {
@@ -94,7 +92,7 @@ public class EReference extends Element {
 	public void dispose() {
 		super.dispose();
 		mInfo.dispose();
-		mSource.removeRef(this);			
+		mSource.removeRef(this);
 		mSource = null;
 		mTarget = null;
 		if (mOpposite != null) {
