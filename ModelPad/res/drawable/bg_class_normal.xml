@@ -6,14 +6,14 @@
 
     <solid android:color="@color/white" />
 
+    <stroke
+        android:width="@dimen/border_stroke_width"
+        android:color="@color/black" />
+
     <padding
         android:bottom="@dimen/class_padding_bottom"
         android:left="@dimen/class_padding"
         android:right="@dimen/class_padding"
         android:top="@dimen/class_padding" />
-
-    <stroke
-        android:width="@dimen/border_stroke_width"
-        android:color="@color/black" />
 
 </shape>

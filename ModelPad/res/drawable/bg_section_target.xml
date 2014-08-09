@@ -10,7 +10,7 @@
         android:dashGap="@dimen/border_stroke_dashgap"
         android:dashWidth="@dimen/border_stroke_dashwidth"
         android:width="@dimen/border_stroke_width"
-        android:color="@color/bluelight" />
+        android:color="@color/orangelight" />
 
     <padding
         android:bottom="@dimen/section_padding"

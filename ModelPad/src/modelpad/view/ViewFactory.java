@@ -16,7 +16,7 @@ public class ViewFactory {
 		LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		view.setLayoutParams(lp);
 		view.setBackgroundResource(R.drawable.bg_class_normal);
-		view.setDividerDrawable(ctx.getResources().getDrawable(R.drawable.class_comp_divider));
+		view.setDividerDrawable(ctx.getResources().getDrawable(R.drawable.divider_horizontal));
 		view.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
 		return view;
 	}

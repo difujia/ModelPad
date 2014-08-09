@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="modelpad.activity.MainActivity"
+            android:name="modelpad.activity.tableofcontent.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape" >
             <intent-filter>
@@ -24,6 +24,14 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="modelpad.activity.editor.EditorActivity"
+            android:parentActivityName="modelpad.activity.tableofcontent.MainActivity"
+            android:screenOrientation="landscape" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="modelpad.activity.tableofcontent.MainActivity" />
         </activity>
     </application>
 

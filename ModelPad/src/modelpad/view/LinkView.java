@@ -1,8 +1,8 @@
 package modelpad.view;
 
 import modelpad.activity.R;
+import modelpad.metamodel.SimpleObserver;
 import android.content.Context;
-import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -11,7 +11,6 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,7 +22,7 @@ public class LinkView extends View implements DynamicLink, StateResponder {
 
 	private final String TAG = "LinkView";
 
-	private DataSetObserver mObserver = new DataSetObserver() {
+	private SimpleObserver mObserver = new SimpleObserver() {
 		public void onInvalidated() {
 			if (semiInvalidated) {
 				Log.d(TAG, "remove linkview");
@@ -75,9 +74,9 @@ public class LinkView extends View implements DynamicLink, StateResponder {
 		paint.setStrokeCap(Paint.Cap.ROUND);
 	}
 
-	private void blueDashLinePaint() {
+	private void orangeDashLinePaint() {
 		paint.reset();
-		paint.setColor(getResources().getColor(R.color.bluelight));
+		paint.setColor(getResources().getColor(R.color.orangelight));
 		paint.setStrokeWidth(strokeWidth);
 		paint.setPathEffect(new DashPathEffect(new float[] { 6, 6 }, 0));
 		paint.setAntiAlias(true);
@@ -87,7 +86,7 @@ public class LinkView extends View implements DynamicLink, StateResponder {
 		paint.setStrokeCap(Paint.Cap.ROUND);
 	}
 
-	public DataSetObserver getObserver() {
+	public SimpleObserver getObserver() {
 		return mObserver;
 	}
 
@@ -180,7 +179,7 @@ public class LinkView extends View implements DynamicLink, StateResponder {
 
 	@Override
 	public void beTarget() {
-		blueDashLinePaint();
+		orangeDashLinePaint();
 		invalidate();
 	}
 
@@ -188,11 +187,5 @@ public class LinkView extends View implements DynamicLink, StateResponder {
 	public void beNormal() {
 		blackLinePaint();
 		invalidate();
-	}
-
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		// TODO Auto-generated method stub
-		return super.onTouchEvent(event);
 	}
 }

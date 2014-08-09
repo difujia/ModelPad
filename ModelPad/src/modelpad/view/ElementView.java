@@ -4,9 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import modelpad.activity.R;
-import modelpad.model.ElementViewModel;
+import modelpad.metamodel.ViewModelBase;
+import modelpad.metamodel.SimpleObserver;
 import android.content.Context;
-import android.database.DataSetObserver;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -16,8 +16,8 @@ public class ElementView extends TextView implements StateResponder {
 
 	private static final String TAG = "ElementView";
 
-	private ElementViewModel mElementVM;
-	private DataSetObserver mObserver = new DataSetObserver() {
+	private ViewModelBase mElementVM;
+	private SimpleObserver mObserver = new SimpleObserver() {
 		public void onChanged() {
 			update();
 		};
@@ -65,8 +65,8 @@ public class ElementView extends TextView implements StateResponder {
 		}
 	}
 
-	public void setViewModel(ElementViewModel viewModel) {
-		ElementViewModel oldViewModel = mElementVM;
+	public void setViewModel(ViewModelBase viewModel) {
+		ViewModelBase oldViewModel = mElementVM;
 		if (oldViewModel != null) {
 			oldViewModel.unregisterObserver(mObserver);
 		}

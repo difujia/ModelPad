@@ -1,7 +1,7 @@
 package modelpad.view;
 
+import modelpad.metamodel.SimpleObserver;
 import android.content.Context;
-import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.Log;
@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 public class LinkTouchDelegateView extends View {
 
 	private static final String TAG = "TouchArea";
-	
-	private DataSetObserver mObserver = new DataSetObserver() {
+
+	private SimpleObserver mObserver = new SimpleObserver() {
 		public void onInvalidated() {
 			if (semiInvalidated) {
 				Log.d(TAG, "remove touch area");
@@ -30,7 +30,7 @@ public class LinkTouchDelegateView extends View {
 		super(context);
 	}
 
-	public DataSetObserver getObserver() {
+	public SimpleObserver getObserver() {
 		return mObserver;
 	}
 
