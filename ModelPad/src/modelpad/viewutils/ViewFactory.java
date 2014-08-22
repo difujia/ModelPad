@@ -1,10 +1,15 @@
-package modelpad.view;
+package modelpad.viewutils;
 
 import modelpad.activity.R;
+import modelpad.view.ClassView;
+import modelpad.view.ElementView;
+import modelpad.view.TouchView;
+import modelpad.view.SectionView;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View.MeasureSpec;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView.LayoutParams;
 import android.widget.LinearLayout;
@@ -30,15 +35,6 @@ public class ViewFactory {
 		return view;
 	}
 
-	public static ElementView createRefLabelView(Context ctx) {
-		ElementView view = new ElementView(ctx);
-		LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		view.setLayoutParams(lp);
-		view.setTextSize(16);
-		view.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
-		return view;
-	}
-
 	public static ViewGroup createSection(Context ctx) {
 		SectionView section = new SectionView(ctx);
 		return section;
@@ -49,7 +45,21 @@ public class ViewFactory {
 		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		view.setLayoutParams(params);
 		view.setTextSize(16);
-//		view.setBackgroundColor(Color.LTGRAY);
+		return view;
+	}
+
+	public static ElementView createRefLabelView(Context ctx) {
+		ElementView view = new ElementView(ctx);
+		LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+		view.setLayoutParams(lp);
+		view.setTextSize(16);
+		view.setVisibility(View.INVISIBLE);
+		return view;
+	}
+
+	public static TouchView createTouchArea(Context ctx) {
+		TouchView view = new TouchView(ctx);
+		view.setVisibility(View.INVISIBLE);
 		return view;
 	}
 }

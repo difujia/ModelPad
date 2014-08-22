@@ -8,8 +8,8 @@ public class EReference extends ElementBase {
 
 	private EClass source;
 	private EClass target;
-	private EReferenceInfo info;
 	private EReference opposite;
+	private EReferenceInfo info;
 
 	/**
 	 * DO NOT USE. This is for xml serialization

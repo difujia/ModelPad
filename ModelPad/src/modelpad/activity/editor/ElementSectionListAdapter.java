@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import modelpad.activity.editor.DragData.CompletionHandler;
 import modelpad.metamodel.ElementBase;
 import modelpad.metamodel.ElementRecycler;
 import modelpad.metamodel.ViewModelBase;
 import modelpad.metamodel.ModelFactory;
 import modelpad.view.ElementView;
-import modelpad.view.ViewFactory;
+import modelpad.viewutils.ViewFactory;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
@@ -67,7 +66,7 @@ public class ElementSectionListAdapter extends ArrayAdapter<ElementBase> impleme
 			view.setLongClickable(false);
 		} else {
 			view.setBackgroundColor(Color.WHITE);
-			view.setOnLongClickListener(new ElementLongClickToDragListener(item).with(new CompletionHandler() {
+			view.setOnLongClickListener(LongClickToDragListener.builder(item).with(new CompletionHandler() {
 				@Override
 				public void complete(boolean consumed) {
 					if (consumed) {
@@ -75,7 +74,7 @@ public class ElementSectionListAdapter extends ArrayAdapter<ElementBase> impleme
 						remove(item);
 					}
 				}
-			}));
+			}).build());
 		}
 		return view;
 	}

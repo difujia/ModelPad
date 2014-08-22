@@ -1,6 +1,8 @@
 package modelpad.activity.editor;
 
-import modelpad.activity.editor.DragData.CompletionHandler;
+import java.util.Collections;
+import java.util.Set;
+
 import modelpad.metamodel.ElementBase;
 import modelpad.view.StateResponder;
 import modelpad.viewutils.Anchor;
@@ -16,39 +18,72 @@ import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.PopupWindow.OnDismissListener;
 
-public class ElementClickToRemoveListener implements OnClickListener {
+import com.google.common.base.Optional;
+import com.google.common.collect.Sets;
+
+public class ClickToRemoveListener implements OnClickListener {
 
 	private static final String TAG = "ElementClick";
+
 	private Context mContext;
 	private Anchor mAnchor;
-	private StateResponder mResponder;
-	private ElementBase[] mElements;
-	private CompletionHandler mHandler = DragData.DummyHandler;
+	private Set<ElementBase> mElements;
+	private Optional<StateResponder> mResponder;
+	private Optional<CompletionHandler> mHandler;
 
-	public ElementClickToRemoveListener(Context context, Anchor anchor, StateResponder responder,
-			ElementBase... elements) {
-		mContext = context;
-		mAnchor = anchor;
-		mResponder = responder;
-		mElements = elements;
+	private ClickToRemoveListener(Builder builder) {
+		mContext = builder.mContext;
+		mAnchor = builder.mAnchor;
+		mResponder = builder.mResponder;
+		mElements = builder.mElements;
+		mHandler = builder.mHandler;
 	}
 
-	public ElementClickToRemoveListener with(CompletionHandler handler) {
-		mHandler = handler;
-		return this;
+	public static class Builder {
+		private Context mContext;
+		private Anchor mAnchor;
+		private Set<ElementBase> mElements = Sets.newHashSet();;
+		private Optional<StateResponder> mResponder = Optional.absent();
+		private Optional<CompletionHandler> mHandler = Optional.absent();
+
+		public Builder(Context mContext, Anchor mAnchor) {
+			this.mContext = mContext;
+			this.mAnchor = mAnchor;
+		}
+
+		public Builder with(StateResponder responder) {
+			this.mResponder = Optional.of(responder);
+			return this;
+		}
+
+		public Builder with(CompletionHandler handler) {
+			this.mHandler = Optional.of(handler);
+			return this;
+		}
+
+		public Builder add(ElementBase... elements) {
+			Collections.addAll(mElements, elements);
+			return this;
+		}
+
+		public OnClickListener build() {
+			return new ClickToRemoveListener(this);
+		}
 	}
 
 	@Override
 	public void onClick(View v) {
-		mResponder.beTarget();
 		final PopupWindow popup = new PopupWindow(mContext);
-		popup.setOnDismissListener(new OnDismissListener() {
+		if (mResponder.isPresent()) {
+			mResponder.get().beTarget();
+			popup.setOnDismissListener(new OnDismissListener() {
 
-			@Override
-			public void onDismiss() {
-				mResponder.beNormal();
-			}
-		});
+				@Override
+				public void onDismiss() {
+					mResponder.get().beNormal();
+				}
+			});
+		}
 
 		int[] location = new int[2];
 		mAnchor.getTopHookOnScreen(location);
@@ -65,7 +100,7 @@ public class ElementClickToRemoveListener implements OnClickListener {
 					element.dispose();
 				}
 				popup.dismiss();
-				mHandler.complete(true);
+				if (mHandler.isPresent()) mHandler.get().complete(true);
 			}
 		});
 

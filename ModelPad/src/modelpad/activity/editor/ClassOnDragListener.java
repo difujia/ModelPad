@@ -8,11 +8,11 @@ import modelpad.metamodel.SolutionManager;
 import modelpad.view.ClassView;
 import modelpad.view.CompositeStateResponder;
 import modelpad.view.ElementView;
-import modelpad.view.LinkBinder;
-import modelpad.view.LinkTouchDelegateView;
 import modelpad.view.LinkView;
-import modelpad.view.ViewFactory;
+import modelpad.view.TouchView;
 import modelpad.viewutils.LinkAnchor;
+import modelpad.viewutils.LinkBinder;
+import modelpad.viewutils.ViewFactory;
 import android.content.Context;
 import android.view.DragEvent;
 import android.view.View;
@@ -90,17 +90,18 @@ public class ClassOnDragListener implements OnDragListener {
 								linkView);
 
 						// click delegate view
-						LinkTouchDelegateView touchArea = new LinkTouchDelegateView(mContext);
+						TouchView touchArea = ViewFactory.createTouchArea(mContext);
 						LinkAnchor anchor = new LinkAnchor(touchArea);
-						touchArea.setOnClickListener(new ElementClickToRemoveListener(mContext, anchor, responders,
-								selfToThat, thatToSelf));
+						touchArea.setOnClickListener(new ClickToRemoveListener.Builder(mContext, anchor)
+								.with(responders).add(selfToThat, thatToSelf).build());
 						mCanvas.addView(touchArea, 0);
 						mCanvas.addView(linkView, 0);
 
 						selfToThat.registerObserver(linkView.getObserver(), touchArea.getObserver());
 						thatToSelf.registerObserver(linkView.getObserver(), touchArea.getObserver());
 
-						LinkBinder binder = new LinkBinder(self, labelForThat, that, labelForSelf, linkView, touchArea);
+						LinkBinder binder = LinkBinder
+								.from(self, labelForThat, that, labelForSelf, linkView, touchArea);
 						self.registerNodeListener(binder);
 						labelForSelf.registerNodeListener(binder);
 						that.registerNodeListener(binder);

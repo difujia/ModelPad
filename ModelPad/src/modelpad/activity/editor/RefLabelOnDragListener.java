@@ -1,6 +1,5 @@
 package modelpad.activity.editor;
 
-import modelpad.activity.editor.DragData.CompletionHandler;
 import modelpad.metamodel.EReference;
 import modelpad.metamodel.EReferenceInfo;
 import modelpad.metamodel.ElementBase;
@@ -63,9 +62,10 @@ public class RefLabelOnDragListener implements OnDragListener {
 					}
 				};
 				ElementAnchor anchor = new ElementAnchor(self);
-				self.setOnClickListener(new ElementClickToRemoveListener(mContext, anchor, self, newInfo).with(handler));
+				self.setOnClickListener(new ClickToRemoveListener.Builder(mContext, anchor).with(self).add(newInfo)
+						.with(handler).build());
 
-				self.setOnLongClickListener(new ElementLongClickToDragListener(newInfo).with(handler));
+				self.setOnLongClickListener(LongClickToDragListener.builder(newInfo).with(handler).build());
 				data.complete(true);
 				break;
 			case DragEvent.ACTION_DRAG_ENDED:

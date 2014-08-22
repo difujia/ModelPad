@@ -1,27 +1,21 @@
 package modelpad.activity.editor;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import modelpad.metamodel.ElementBase;
 import android.view.View;
 
+import com.google.common.base.Optional;
+
 public class DragData {
-
-	public interface CompletionHandler {
-		void complete(boolean consumed);
-	}
-
-	public static final CompletionHandler DummyHandler = new CompletionHandler() {
-		@Override
-		public void complete(boolean consumed) {
-			// dummy does nothing
-		}
-	};
 
 	private ElementBase mElement;
 	private View mSourceView;
-	private CompletionHandler mCompletionHandler;
+	private Optional<CompletionHandler> mHandler;
 
-	public DragData(ElementBase e) {
-		mElement = e;
+	private DragData(Builder builder) {
+		mElement = builder.mElement;
+		mSourceView = builder.mSourceView;
+		mHandler = builder.mCompletionHandler;
 	}
 
 	public ElementBase getElement() {
@@ -32,17 +26,33 @@ public class DragData {
 		return mSourceView;
 	}
 
-	public DragData with(CompletionHandler handler) {
-		mCompletionHandler = handler;
-		return this;
-	}
-
-	public DragData with(View sourceView) {
-		mSourceView = sourceView;
-		return this;
-	}
-
 	public void complete(boolean consumed) {
-		mCompletionHandler.complete(consumed);
+		if (mHandler.isPresent()) mHandler.get().complete(consumed);
+	}
+
+	public static class Builder {
+
+		private ElementBase mElement;
+		private View mSourceView;
+		private Optional<CompletionHandler> mCompletionHandler;
+
+		public Builder(ElementBase element, View sourceView) {
+			mElement = element;
+			mSourceView = sourceView;
+		}
+
+		public Builder with(CompletionHandler handler) {
+			mCompletionHandler = Optional.of(handler);
+			return this;
+		}
+
+		public Builder with(Optional<CompletionHandler> handler) {
+			mCompletionHandler = checkNotNull(handler);
+			return this;
+		}
+
+		public DragData build() {
+			return new DragData(this);
+		}
 	}
 }

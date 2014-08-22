@@ -2,6 +2,7 @@ package modelpad.view;
 
 import modelpad.activity.R;
 import modelpad.metamodel.SimpleObserver;
+import modelpad.viewutils.LinkBinder.DynamicLink;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,10 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class LinkView extends View implements DynamicLink, StateResponder {
-
-	public enum Orientation {
-		Unspecified, Horizontal, Vertical
-	}
 
 	private final String TAG = "LinkView";
 

@@ -2,6 +2,6 @@ package modelpad.view;
 
 import android.view.View;
 
-interface ViewGeoChangeListener {
+public interface ViewGeoChangeListener {
 	void viewGeoChanged(View v);
 }

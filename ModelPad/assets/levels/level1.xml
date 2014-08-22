@@ -1,0 +1,50 @@
+<level id="1" title="Bank" subtitle="This is simply a piece of description." question="This is a simple puzzle about bank account and client.">
+  <expectedSolution id="2">
+    <class id="3" name="Client">
+      <attributes id="4">
+        <attribute id="5" name="name" type="String">
+          <owner rid="3"/>
+        </attribute>
+        <attribute id="6" name="age" type="int">
+          <owner rid="3"/>
+        </attribute>
+      </attributes>
+      <references id="7">
+        <reference id="8">
+          <source rid="3"/>
+          <target id="9" name="Account">
+            <attributes id="10">
+              <attribute id="11" name="balance" type="String">
+                <owner rid="9"/>
+              </attribute>
+            </attributes>
+            <references id="12">
+              <reference id="13">
+                <source rid="9"/>
+                <target rid="3"/>
+                <info id="14" name="clients" containment="false" lowerbound="1" upperbound="1">
+                  <owner rid="13"/>
+                </info>
+                <opposite rid="8"/>
+              </reference>
+            </references>
+          </target>
+          <info id="15" name="accounts" containment="false" lowerbound="0" upperbound="*">
+            <owner rid="8"/>
+          </info>
+          <opposite rid="13"/>
+        </reference>
+      </references>
+    </class>
+    <class rid="9"/>
+  </expectedSolution>
+  <surplusClasses id="16">
+    <class id="17" name="Bank"/>
+  </surplusClasses>
+  <surplusAttrs id="18">
+    <attribute id="19" name="isVIP" type="boolean"/>
+  </surplusAttrs>
+  <surplusRefInfos id="20">
+    <info id="21" name="boss" containment="false" lowerbound="1" upperbound="1"/>
+  </surplusRefInfos>
+</level>
