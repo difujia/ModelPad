@@ -6,7 +6,7 @@ import modelpad.metamodel.ElementBase;
 import modelpad.metamodel.SolutionManager;
 import modelpad.view.ClassView;
 import modelpad.viewutils.ElementAnchor;
-import modelpad.viewutils.ViewFactory;
+import modelpad.viewutils.ViewHelper;
 import android.content.Context;
 import android.view.DragEvent;
 import android.view.View;
@@ -50,7 +50,7 @@ class CanvasOnDragListener implements OnDragListener {
 				// modify the model
 				mManager.addClass(clazz);
 				// create new class element view
-				final ClassView classView = ViewFactory.createClassView(mContext);
+				final ClassView classView = ViewHelper.createClassView(mContext);
 				classView.setViewModel(new ClassViewModel(clazz));
 				// for start dragging this class title
 				classView.setOnLongClickListenerForTitleView(LongClickToDragListener.builder(clazz).build());

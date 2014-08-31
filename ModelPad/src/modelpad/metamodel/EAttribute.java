@@ -13,9 +13,9 @@ public class EAttribute extends ElementBase {
 	/**
 	 * DO NOT USE. This is for xml serialization
 	 */
-	EAttribute() {}
+	protected EAttribute() {}
 
-	EAttribute(String name, String type) {
+	protected EAttribute(String name, String type) {
 		this.name = name;
 		this.type = type;
 	}
@@ -32,7 +32,7 @@ public class EAttribute extends ElementBase {
 	}
 
 	@Override
-	public boolean lookslike(ElementBase other) {
+	protected boolean lookslike(ElementBase other) {
 		if (getClass() != other.getClass()) {
 			return false;
 		}
@@ -41,7 +41,7 @@ public class EAttribute extends ElementBase {
 	}
 
 	@Override
-	public boolean match(ElementBase other) {
+	protected boolean match(ElementBase other) {
 		if (lookslike(other)) {
 			EAttribute that = (EAttribute) other;
 			return owner.match(that.owner);
@@ -50,15 +50,15 @@ public class EAttribute extends ElementBase {
 		}
 	}
 
-	String getType() {
+	protected String getType() {
 		return type;
 	}
 
-	void setOwner(EClass owner) {
+	protected void setOwner(EClass owner) {
 		this.owner = owner;
 	}
 
-	void removeFromOwner() {
+	protected void removeFromOwner() {
 		if (owner != null) {
 			boolean modified = owner.removeAttr(this);
 			if (!modified) {
@@ -68,7 +68,7 @@ public class EAttribute extends ElementBase {
 		}
 	}
 
-	boolean isOwnedBy(EClass clazz) {
+	protected boolean isOwnedBy(EClass clazz) {
 		return owner == clazz;
 	}
 

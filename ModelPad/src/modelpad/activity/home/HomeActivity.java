@@ -1,4 +1,4 @@
-package modelpad.activity.tableofcontent;
+package modelpad.activity.home;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,7 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 
-public class MainActivity extends Activity {
+public class HomeActivity extends Activity {
 
 	private static final String TAG = "MainActivity";
 
@@ -66,10 +66,10 @@ public class MainActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Level level = mAdapter.getItem(position);
-				Intent intent = new Intent(MainActivity.this, EditorActivity.class);
+				Intent intent = new Intent(HomeActivity.this, EditorActivity.class);
 				intent.putExtra("level", level);
 				try {
-					Level unmodifiableLevel = GameDataLoader.getLevelByFilePath(MainActivity.this,
+					Level unmodifiableLevel = GameDataLoader.getLevelByFilePath(HomeActivity.this,
 							filePaths.get(position));
 					intent.putExtra("unmodifiableLevel", unmodifiableLevel);
 				} catch (IOException e) {

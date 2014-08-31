@@ -14,9 +14,9 @@ public class EReference extends ElementBase {
 	/**
 	 * DO NOT USE. This is for xml serialization
 	 */
-	EReference() {}
+	protected EReference() {}
 
-	EReference(EClass source, EClass target) {
+	protected EReference(EClass source, EClass target) {
 		this.source = source;
 		this.target = target;
 		this.info = ModelFactory.createInfoPlaceHolder();
@@ -42,7 +42,7 @@ public class EReference extends ElementBase {
 	}
 
 	@Override
-	public boolean lookslike(ElementBase other) {
+	protected boolean lookslike(ElementBase other) {
 		if (getClass() != other.getClass()) {
 			return false;
 		}
@@ -51,7 +51,7 @@ public class EReference extends ElementBase {
 	}
 
 	@Override
-	public boolean match(ElementBase other) {
+	protected boolean match(ElementBase other) {
 		if (lookslike(other)) {
 			EReference that = (EReference) other;
 			return source.match(that.source) && target.match(that.target);
@@ -60,7 +60,7 @@ public class EReference extends ElementBase {
 		}
 	}
 
-	void setInfo(EReferenceInfo info) {
+	protected void setInfo(EReferenceInfo info) {
 		EReferenceInfo oldInfo = this.info;
 		oldInfo.dispose();
 		this.info = info;
@@ -68,49 +68,49 @@ public class EReference extends ElementBase {
 		notifyDataChanged();
 	}
 
-	EReferenceInfo getInfo() {
+	protected EReferenceInfo getInfo() {
 		return info;
 	}
 
-	void clearInfo() {
+	protected void clearInfo() {
 		info = ModelFactory.createInfoPlaceHolder();
 		info.setOwner(this);
 		notifyDataChanged();
 	}
 
-	boolean isContainment() {
+	protected boolean isContainment() {
 		return info.isContainment();
 	}
 
-	void setContainment(boolean containment) {
+	protected void setContainment(boolean containment) {
 		info.setContainment(containment);
 	}
 
-	String getLowerBound() {
+	protected String getLowerBound() {
 		return info.getLowerBound();
 	}
 
-	void setLowerBound(String lowerBound) {
+	protected void setLowerBound(String lowerBound) {
 		info.setLowerBound(lowerBound);
 	}
 
-	String getUpperBound() {
+	protected String getUpperBound() {
 		return info.getUpperBound();
 	}
 
-	void setUpperBound(String upperBound) {
+	protected void setUpperBound(String upperBound) {
 		info.setUpperBound(upperBound);
 	}
 
-	EClass getTarget() {
+	protected EClass getTarget() {
 		return target;
 	}
 
-	EReference getOpposite() {
+	protected EReference getOpposite() {
 		return opposite;
 	}
 
-	void setOpposite(EReference opposite) {
+	protected void setOpposite(EReference opposite) {
 		removeOpposite();
 		this.opposite = opposite;
 	}

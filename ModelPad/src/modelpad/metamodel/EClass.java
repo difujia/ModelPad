@@ -17,9 +17,9 @@ public class EClass extends ElementBase {
 	/**
 	 * DO NOT USE. This is for xml serialization
 	 */
-	EClass() {}
+	protected EClass() {}
 
-	EClass(String name) {
+	protected EClass(String name) {
 		this.name = name;
 	}
 
@@ -46,12 +46,12 @@ public class EClass extends ElementBase {
 	}
 
 	@Override
-	public boolean match(ElementBase other) {
+	protected boolean match(ElementBase other) {
 		return lookslike(other);
 	}
 
 	@Override
-	public boolean lookslike(ElementBase other) {
+	protected boolean lookslike(ElementBase other) {
 		if (getClass() != other.getClass()) {
 			return false;
 		}
@@ -59,38 +59,36 @@ public class EClass extends ElementBase {
 		return name.equals(that.name);
 	}
 
-	Set<EAttribute> getAttributes() {
+	protected Set<EAttribute> getAttributes() {
 		return Collections.unmodifiableSet(getAttrs());
 	}
 
-	Set<EReference> getReferences() {
+	protected Set<EReference> getReferences() {
 		return Collections.unmodifiableSet(getRefs());
 	}
 
-	boolean addAttr(EAttribute attr) {
-		if (hasAttr(attr))
-			return false;
+	protected boolean addAttr(EAttribute attr) {
+		if (hasAttr(attr)) return false;
 		attr.removeFromOwner();
 		attr.setOwner(this);
 		return getAttrs().add(attr);
 	}
 
-	boolean removeAttr(EAttribute attr) {
-		if (!hasAttr(attr))
-			return false;
+	protected boolean removeAttr(EAttribute attr) {
+		if (!hasAttr(attr)) return false;
 		attr.setOwner(null);
 		return getAttrs().remove(attr);
 	}
 
-	boolean hasAttr(EAttribute attr) {
+	protected boolean hasAttr(EAttribute attr) {
 		return getAttrs().contains(attr);
 	}
 
-	boolean addRef(EReference ref) {
+	protected boolean addRef(EReference ref) {
 		return getRefs().add(ref);
 	}
 
-	boolean removeRef(EReference ref) {
+	protected boolean removeRef(EReference ref) {
 		return getRefs().remove(ref);
 	}
 

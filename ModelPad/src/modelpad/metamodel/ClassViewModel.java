@@ -2,16 +2,16 @@ package modelpad.metamodel;
 
 public class ClassViewModel extends ViewModelBase {
 
-	private EClass mModel;
+	private EClass model;
 
 	public ClassViewModel(EClass model) {
 		super(model);
-		mModel = model;
+		this.model = model;
 	}
 
 	@Override
 	public String getStringDisplay() {
-		return mModel.getName();
+		return model.getName();
 	}
 
 }

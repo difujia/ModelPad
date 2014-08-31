@@ -16,9 +16,9 @@ public class EReferenceInfo extends ElementBase {
 	/**
 	 * DO NOT USE. This is for xml serialization
 	 */
-	EReferenceInfo() {}
+	protected EReferenceInfo() {}
 
-	EReferenceInfo(String name, String lowerbound, String upperbound) {
+	protected EReferenceInfo(String name, String lowerbound, String upperbound) {
 		this.name = name;
 		this.lowerbound = lowerbound;
 		this.upperbound = upperbound;
@@ -39,7 +39,7 @@ public class EReferenceInfo extends ElementBase {
 	}
 
 	@Override
-	public boolean lookslike(ElementBase other) {
+	protected boolean lookslike(ElementBase other) {
 		if (getClass() != other.getClass()) {
 			return false;
 		}
@@ -49,7 +49,7 @@ public class EReferenceInfo extends ElementBase {
 	}
 
 	@Override
-	public boolean match(ElementBase other) {
+	protected boolean match(ElementBase other) {
 		if (lookslike(other)) {
 			EReferenceInfo that = (EReferenceInfo) other;
 			return owner.match(that.owner);
@@ -58,31 +58,31 @@ public class EReferenceInfo extends ElementBase {
 		}
 	}
 
-	boolean isContainment() {
+	protected boolean isContainment() {
 		return containment;
 	}
 
-	void setContainment(boolean containment) {
+	protected void setContainment(boolean containment) {
 		this.containment = containment;
 	}
 
-	String getLowerBound() {
+	protected String getLowerBound() {
 		return lowerbound;
 	}
 
-	void setLowerBound(String lowerbound) {
+	protected void setLowerBound(String lowerbound) {
 		this.lowerbound = lowerbound;
 	}
 
-	String getUpperBound() {
+	protected String getUpperBound() {
 		return upperbound;
 	}
 
-	void setUpperBound(String upperBound) {
+	protected void setUpperBound(String upperBound) {
 		upperbound = upperBound;
 	}
 
-	void setOwner(EReference owner) {
+	protected void setOwner(EReference owner) {
 		EReference oldOwner = this.owner;
 		if (oldOwner != null) {
 			oldOwner.clearInfo();

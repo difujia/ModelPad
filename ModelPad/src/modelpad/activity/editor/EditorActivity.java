@@ -9,16 +9,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.hb.views.PinnedSectionListView;
 
 public class EditorActivity extends Activity {
 
 	private static final String TAG = "EditorActivity";
-	private FrameLayout mCanvas;
 
 	private SolutionManager manager = new SolutionManager();
 	private Level mUntouchLevel;
@@ -32,6 +34,10 @@ public class EditorActivity extends Activity {
 		Level level = (Level) getIntent().getSerializableExtra("level");
 		setTitle(level.getTitle());
 
+		TextView text = (TextView) findViewById(R.id.editor_text);
+		text.setText(level.getQuestion());
+		text.setMovementMethod(ScrollingMovementMethod.getInstance());
+
 		ElementSectionListAdapter adapter = new ElementSectionListAdapter(this);
 		adapter.addSectionObject(ModelFactory.getHeaderClass());
 		adapter.addSectionObject(ModelFactory.getHeaderAttr());
@@ -42,8 +48,8 @@ public class EditorActivity extends Activity {
 		PinnedSectionListView listView = (PinnedSectionListView) findViewById(R.id.editor_list);
 		listView.setAdapter(adapter);
 
-		mCanvas = (FrameLayout) findViewById(R.id.editor_canvas);
-		mCanvas.setOnDragListener(new CanvasOnDragListener(this, mCanvas, manager));
+		ViewGroup canvas = (FrameLayout) findViewById(R.id.editor_canvas);
+		canvas.setOnDragListener(new CanvasOnDragListener(this, canvas, manager));
 
 		mUntouchLevel = (Level) getIntent().getSerializableExtra("unmodifiableLevel");
 	}
@@ -75,7 +81,7 @@ public class EditorActivity extends Activity {
 				NavUtils.navigateUpTo(this, intent);
 				return true;
 			case R.id.menu_editor_commit:
-				ValidateFragment dialog = ValidateFragment.create(new Validator(manager.getSolution(), mUntouchLevel));
+				ValidationFragment dialog = ValidationFragment.create(new Validator(manager.getSolution(), mUntouchLevel));
 				dialog.show(getFragmentManager(), "dialog");
 				return true;
 		}

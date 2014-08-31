@@ -57,7 +57,6 @@ public class ElementView extends TextView implements StateResponder {
 			setBackgroundResource(R.drawable.bg_element_blank);
 			setAlpha(0.1f);
 			setMinWidth(80);
-			setMinHeight(36);
 		} else {
 			setBackgroundResource(R.drawable.bg_element_normal);
 			setAlpha(1);

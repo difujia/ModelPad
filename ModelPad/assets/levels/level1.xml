@@ -1,4 +1,4 @@
-<level id="1" title="Bank" subtitle="This is simply a piece of description." question="This is a simple puzzle about bank account and client.">
+<level id="1" title="Bank" subtitle="This is simply a piece of description." question="This is a simple puzzle about bank account and client. What's the relationship between bank and client? What information should the bank know about its client? Wire up these components to a sensible shape.">
   <expectedSolution id="2">
     <class id="3" name="Client">
       <attributes id="4">

@@ -12,7 +12,7 @@ import modelpad.view.LinkView;
 import modelpad.view.TouchView;
 import modelpad.viewutils.LinkAnchor;
 import modelpad.viewutils.LinkBinder;
-import modelpad.viewutils.ViewFactory;
+import modelpad.viewutils.ViewHelper;
 import android.content.Context;
 import android.view.DragEvent;
 import android.view.View;
@@ -73,11 +73,11 @@ public class ClassOnDragListener implements OnDragListener {
 						EReference thatToSelf = mManager.makeRefBetween(thatClass, mClass);
 						mManager.pairRefs(selfToThat, thatToSelf);
 
-						ElementView labelForSelf = ViewFactory.createRefLabelView(mContext);
+						ElementView labelForSelf = ViewHelper.createRefLabelView(mContext);
 						labelForSelf.setOnDragListener(new RefLabelOnDragListener(mContext, selfToThat, mManager));
 						labelForSelf.setViewModel(new ReferenceViewModel(selfToThat));
 
-						ElementView labelForThat = ViewFactory.createRefLabelView(mContext);
+						ElementView labelForThat = ViewHelper.createRefLabelView(mContext);
 						labelForThat.setOnDragListener(new RefLabelOnDragListener(mContext, thatToSelf, mManager));
 						labelForThat.setViewModel(new ReferenceViewModel(thatToSelf));
 
@@ -90,7 +90,7 @@ public class ClassOnDragListener implements OnDragListener {
 								linkView);
 
 						// click delegate view
-						TouchView touchArea = ViewFactory.createTouchArea(mContext);
+						TouchView touchArea = ViewHelper.createTouchArea(mContext);
 						LinkAnchor anchor = new LinkAnchor(touchArea);
 						touchArea.setOnClickListener(new ClickToRemoveListener.Builder(mContext, anchor)
 								.with(responders).add(selfToThat, thatToSelf).build());

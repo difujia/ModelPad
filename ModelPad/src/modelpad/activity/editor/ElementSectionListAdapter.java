@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import modelpad.activity.R;
 import modelpad.metamodel.ElementBase;
 import modelpad.metamodel.ElementRecycler;
-import modelpad.metamodel.ViewModelBase;
 import modelpad.metamodel.ModelFactory;
+import modelpad.metamodel.ViewModelBase;
 import modelpad.view.ElementView;
-import modelpad.viewutils.ViewFactory;
+import modelpad.viewutils.ViewHelper;
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,11 +43,16 @@ public class ElementSectionListAdapter extends ArrayAdapter<ElementBase> impleme
 		return sectionObjects.contains(item) ? SECTION : ITEM;
 	}
 
+//	private static int counter = 0;
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ElementView view;
 		if (convertView == null) {
-			view = ViewFactory.createListItemView(getContext());
+			if (getItemViewType(position) == SECTION) {
+				view = ViewHelper.createListSectionView(getContext());
+			} else {
+				view = ViewHelper.createListItemView(getContext());
+			}
 		} else {
 			view = (ElementView) convertView;
 		}
@@ -59,18 +64,21 @@ public class ElementSectionListAdapter extends ArrayAdapter<ElementBase> impleme
 
 		final ViewModelBase viewModel = ModelFactory.createViewModel(item);
 		view.setViewModel(viewModel);
-
-		if (sectionObjects.contains(item)) {
-			view.setBackgroundColor(Color.YELLOW);
-			// section row should not be clickable
-			view.setLongClickable(false);
+//		final int cc = counter++;
+//		Log.d(LOG, "cc: " + cc + ", " + viewModel.getStringDisplay());
+		if (getItemViewType(position) == SECTION) {
+			view.setBackgroundResource(R.drawable.bg_list_section);
 		} else {
-			view.setBackgroundColor(Color.WHITE);
 			view.setOnLongClickListener(LongClickToDragListener.builder(item).with(new CompletionHandler() {
 				@Override
 				public void complete(boolean consumed) {
 					if (consumed) {
-						viewModel.releaseModel();
+//						Log.e(LOG, "counter: " + cc);
+						try {
+							viewModel.releaseModel();							
+						} catch (Exception e) {
+							Log.w(LOG, "not registered!");
+						}
 						remove(item);
 					}
 				}
@@ -91,8 +99,10 @@ public class ElementSectionListAdapter extends ArrayAdapter<ElementBase> impleme
 				int sectionPosition = getPosition(sectionObj);
 				super.insert(item, sectionPosition + 1);
 				item.setRecycler(this);
+				return;
 			}
 		}
+		throw new IllegalArgumentException("Added item doesn't belong to any section, add section item first.");
 	}
 
 	@Override
@@ -135,7 +145,6 @@ public class ElementSectionListAdapter extends ArrayAdapter<ElementBase> impleme
 	@Override
 	public void recycle(ElementBase item) {
 		if (getPosition(item) == -1) {
-			Log.d(LOG, "recycle " + item.getClass().getSimpleName() + ": " + item.getName());
 			add(item);
 		}
 	}

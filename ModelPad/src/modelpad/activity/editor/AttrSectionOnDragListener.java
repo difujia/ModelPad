@@ -9,7 +9,7 @@ import modelpad.metamodel.ViewModelBase;
 import modelpad.view.ElementView;
 import modelpad.view.SectionView;
 import modelpad.viewutils.ElementAnchor;
-import modelpad.viewutils.ViewFactory;
+import modelpad.viewutils.ViewHelper;
 import android.content.Context;
 import android.view.DragEvent;
 import android.view.View;
@@ -59,7 +59,7 @@ public class AttrSectionOnDragListener implements OnDragListener {
 				mManager.addAttrToClass(attr, mClass);
 				final ElementView attrView;
 				final ViewModelBase viewModel = ModelFactory.createViewModel(attr);
-				attrView = ViewFactory.createSectionItemView(mContext);
+				attrView = ViewHelper.createClassSectionItem(mContext);
 				attrView.setViewModel(viewModel);
 				attrView.setOnLongClickListener(LongClickToDragListener.builder(attr).with(new CompletionHandler() {
 

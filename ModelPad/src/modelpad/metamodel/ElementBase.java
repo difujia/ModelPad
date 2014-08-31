@@ -12,11 +12,16 @@ public abstract class ElementBase implements Serializable {
 	private ElementRecycler mRecycler;
 	private SimpleObservable mObservable = new SimpleObservable();
 
+	/**
+	 * Not to be initialised outside of this package.
+	 */
+	protected ElementBase() {}
+
+	protected abstract boolean match(ElementBase other);
+
+	protected abstract boolean lookslike(ElementBase other);
+
 	public abstract String getName();
-
-	public abstract boolean match(ElementBase other);
-
-	public abstract boolean lookslike(ElementBase other);
 
 	public void setRecycler(ElementRecycler recycler) {
 		mRecycler = recycler;

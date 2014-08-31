@@ -23,7 +23,7 @@ class LongClickToDragListener implements OnLongClickListener {
 
 	public static class Builder {
 		private ElementBase mElement;
-		private Optional<CompletionHandler> mHandler;
+		private Optional<CompletionHandler> mHandler = Optional.absent();
 
 		public Builder(ElementBase element) {
 			mElement = element;

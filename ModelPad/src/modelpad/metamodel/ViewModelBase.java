@@ -2,7 +2,7 @@ package modelpad.metamodel;
 
 public abstract class ViewModelBase {
 
-	protected ElementBase mModel;
+	protected ElementBase model;
 	private SimpleObservable mObservable = new SimpleObservable();
 	private SimpleObserver mObserver = new SimpleObserver() {
 
@@ -17,13 +17,13 @@ public abstract class ViewModelBase {
 	};
 
 	public ViewModelBase(ElementBase model) {
-		mModel = model;
-		mModel.registerObserver(mObserver);
+		this.model = model;
+		this.model.registerObserver(mObserver);
 	}
 
 	public void releaseModel() {
-		mModel.unregisterObserver(mObserver);
-		mModel = null;
+		model.unregisterObserver(mObserver);
+		model = null;
 	}
 
 	public void registerObserver(SimpleObserver observer) {

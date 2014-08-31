@@ -2,23 +2,23 @@ package modelpad.metamodel;
 
 public class ReferenceInfoViewModel extends ViewModelBase {
 
-	private EReferenceInfo mModel;
+	private EReferenceInfo model;
 
 	public ReferenceInfoViewModel(EReferenceInfo model) {
 		super(model);
-		mModel = model;
+		this.model = model;
 	}
 
 	@Override
 	public String getStringDisplay() {
-		if (mModel.getName().length() > 0) {
+		if (model.getName().length() > 0) {
 			String mult;
-			if (mModel.getLowerBound().equals(mModel.getUpperBound())) {
-				mult = String.format("[%s]", mModel.getLowerBound());
+			if (model.getLowerBound().equals(model.getUpperBound())) {
+				mult = String.format("[%s]", model.getLowerBound());
 			} else {
-				mult = String.format("[%s..%s]", mModel.getLowerBound(), mModel.getUpperBound());
+				mult = String.format("[%s..%s]", model.getLowerBound(), model.getUpperBound());
 			}
-			return String.format("%s %s", mModel.getName(), mult);
+			return String.format("%s %s", model.getName(), mult);
 		} else {
 			return "";
 		}

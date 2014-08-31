@@ -44,7 +44,9 @@ public class Validator {
 	private Set<EAttribute> unexpectedAttrs;
 	private Set<EReferenceInfo> unexpectedRefInfos;
 
-	private Set<EClass> misplacedClasses;
+	/*
+	 * Classes cannot be "misplaced"
+	 */
 	private Set<EAttribute> misplacedAttrs;
 	private Set<EReferenceInfo> misplacedRefInfos;
 
@@ -88,8 +90,6 @@ public class Validator {
 		unexpectedRefInfos = FluentIterable.from(userRefInfos).filter(lookslikeAnyIn(level.getSurplusRefInfos()))
 				.toSet();
 
-		misplacedClasses = FluentIterable.from(userClasses).filter(notIn(matchedClasses))
-				.filter(notIn(unexpectedClasses)).toSet();
 		misplacedAttrs = FluentIterable.from(userAttrs).filter(notIn(matchedAttrs)).filter(notIn(unexpectedAttrs))
 				.toSet();
 		misplacedRefInfos = FluentIterable.from(userRefInfos).filter(notPlaceHolder).filter(notIn(matchedRefInfos))
@@ -111,8 +111,7 @@ public class Validator {
 			@Override
 			public boolean apply(T arg) {
 				for (T element : c) {
-					if (arg.match(element))
-						return true;
+					if (arg.match(element)) return true;
 				}
 				return false;
 			}
@@ -125,8 +124,7 @@ public class Validator {
 			@Override
 			public boolean apply(T arg) {
 				for (T element : c) {
-					if (arg.lookslike(element))
-						return true;
+					if (arg.lookslike(element)) return true;
 				}
 				return false;
 			}
@@ -178,10 +176,6 @@ public class Validator {
 		return unexpectedRefInfos;
 	}
 
-	public Set<EClass> getMisplacedClasses() {
-		return misplacedClasses;
-	}
-
 	public Set<EAttribute> getMisplacedAttrs() {
 		return misplacedAttrs;
 	}
@@ -191,6 +185,6 @@ public class Validator {
 	}
 
 	public Set<ElementBase> getAllMisplaced() {
-		return ImmutableSet.copyOf(Iterables.concat(misplacedClasses, misplacedAttrs, misplacedRefInfos));
+		return ImmutableSet.copyOf(Iterables.concat(misplacedAttrs, misplacedRefInfos));
 	}
 }

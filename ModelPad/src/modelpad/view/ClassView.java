@@ -6,7 +6,7 @@ import java.util.Set;
 import modelpad.activity.R;
 import modelpad.metamodel.ClassViewModel;
 import modelpad.metamodel.SimpleObserver;
-import modelpad.viewutils.ViewFactory;
+import modelpad.viewutils.ViewHelper;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -15,7 +15,6 @@ import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
@@ -70,14 +69,13 @@ public class ClassView extends LinearLayout implements StateResponder {
 		setBackgroundResource(R.drawable.bg_class_normal);
 		// create title view
 		mTitleView = new ElementView(getContext());
-		// mTitleView.setBackgroundResource(R.drawable.bg_class_title);
 		mTitleView.setTypeface(mTitleView.getTypeface(), Typeface.BOLD);
 		mTitleView.setTextSize(16);
 		mTitleView.setGravity(Gravity.CENTER);
 		addView(mTitleView);
 
 		// create section view
-		mAttrSection = ViewFactory.createSection(getContext());
+		mAttrSection = ViewHelper.createClassSection(getContext());
 		TextView sectionLabel = new TextView(getContext());
 		sectionLabel.setTypeface(sectionLabel.getTypeface(), Typeface.ITALIC);
 		sectionLabel.setText("attributes");

@@ -33,23 +33,24 @@ public final class R {
          */
         public static final int activity_horizontal_margin=0x7f050000;
         public static final int activity_vertical_margin=0x7f050001;
-        public static final int border_stroke_dashgap=0x7f050008;
-        public static final int border_stroke_dashwidth=0x7f050007;
-        public static final int border_stroke_width=0x7f050006;
-        public static final int class_padding=0x7f050004;
-        public static final int class_padding_bottom=0x7f050005;
+        public static final int border_stroke_dashgap=0x7f050009;
+        public static final int border_stroke_dashwidth=0x7f050008;
+        public static final int border_stroke_width=0x7f050007;
+        public static final int class_padding=0x7f050005;
+        public static final int class_padding_bottom=0x7f050006;
         public static final int element_padding=0x7f050003;
+        public static final int list_section_padding=0x7f050004;
         public static final int section_padding=0x7f050002;
     }
     public static final class drawable {
         public static final int bg_class_active=0x7f020000;
         public static final int bg_class_normal=0x7f020001;
         public static final int bg_class_target=0x7f020002;
-        public static final int bg_class_title=0x7f020003;
-        public static final int bg_element_active=0x7f020004;
-        public static final int bg_element_blank=0x7f020005;
-        public static final int bg_element_normal=0x7f020006;
-        public static final int bg_element_target=0x7f020007;
+        public static final int bg_element_active=0x7f020003;
+        public static final int bg_element_blank=0x7f020004;
+        public static final int bg_element_normal=0x7f020005;
+        public static final int bg_element_target=0x7f020006;
+        public static final int bg_list_section=0x7f020007;
         public static final int bg_section_active=0x7f020008;
         public static final int bg_section_normal=0x7f020009;
         public static final int bg_section_target=0x7f02000a;
@@ -58,21 +59,24 @@ public final class R {
         public static final int section_divider=0x7f02000d;
     }
     public static final class id {
-        public static final int action_settings=0x7f090009;
-        public static final int dialog_cell_comment=0x7f090005;
-        public static final int dialog_cell_figure=0x7f090004;
-        public static final int dialog_cell_title=0x7f090003;
-        public static final int editor_canvas=0x7f090001;
-        public static final int editor_list=0x7f090000;
-        public static final int grid_cell_text=0x7f090007;
-        public static final int grid_cell_title=0x7f090006;
-        public static final int grid_toc=0x7f090002;
-        public static final int menu_editor_commit=0x7f090008;
+        public static final int action_settings=0x7f09000c;
+        public static final int dialog_comment=0x7f090008;
+        public static final int dialog_matched=0x7f090004;
+        public static final int dialog_misplaced=0x7f090005;
+        public static final int dialog_missing=0x7f090006;
+        public static final int dialog_unexpected=0x7f090007;
+        public static final int editor_canvas=0x7f090002;
+        public static final int editor_list=0x7f090001;
+        public static final int editor_text=0x7f090000;
+        public static final int grid_cell_text=0x7f09000a;
+        public static final int grid_cell_title=0x7f090009;
+        public static final int grid_toc=0x7f090003;
+        public static final int menu_editor_commit=0x7f09000b;
     }
     public static final class layout {
         public static final int activity_editor=0x7f030000;
         public static final int activity_main=0x7f030001;
-        public static final int dialog_list_cell=0x7f030002;
+        public static final int dialog_feedback=0x7f030002;
         public static final int grid_cell=0x7f030003;
     }
     public static final class menu {
