@@ -1,9 +1,9 @@
 package modelpad.activity.editor;
 
-import modelpad.metamodel.ClassViewModel;
-import modelpad.metamodel.EClass;
-import modelpad.metamodel.ElementBase;
-import modelpad.metamodel.SolutionManager;
+import modelpad.datamodel.AbstractElement;
+import modelpad.datamodel.ClassViewModel;
+import modelpad.datamodel.EClass;
+import modelpad.datamodel.SolutionManager;
 import modelpad.view.ClassView;
 import modelpad.viewutils.ElementAnchor;
 import modelpad.viewutils.ViewHelper;
@@ -11,15 +11,15 @@ import android.content.Context;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.View.OnDragListener;
-import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 class CanvasOnDragListener implements OnDragListener {
 
 	private Context mContext;
-	private ViewGroup mCanvas;
+	private FrameLayout mCanvas;
 	private SolutionManager mManager;
 
-	public CanvasOnDragListener(Context ctx, ViewGroup canvas, SolutionManager sm) {
+	public CanvasOnDragListener(Context ctx, FrameLayout canvas, SolutionManager sm) {
 		mContext = ctx;
 		mCanvas = canvas;
 		mManager = sm;
@@ -28,7 +28,7 @@ class CanvasOnDragListener implements OnDragListener {
 	@Override
 	public boolean onDrag(View v, DragEvent ev) {
 		DragData data = (DragData) ev.getLocalState();
-		ElementBase comingElement = data.getElement();
+		AbstractElement comingElement = data.getElement();
 		if (!(comingElement instanceof EClass)) {
 			return false;
 		}

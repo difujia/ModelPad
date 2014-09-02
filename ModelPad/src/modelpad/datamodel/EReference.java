@@ -1,8 +1,8 @@
-package modelpad.metamodel;
+package modelpad.datamodel;
 
 import com.google.common.base.Objects.ToStringHelper;
 
-public class EReference extends ElementBase {
+public class EReference extends AbstractElement {
 
 	private static final long serialVersionUID = 5707299262724241156L;
 
@@ -42,7 +42,7 @@ public class EReference extends ElementBase {
 	}
 
 	@Override
-	protected boolean lookslike(ElementBase other) {
+	protected boolean lookslike(AbstractElement other) {
 		if (getClass() != other.getClass()) {
 			return false;
 		}
@@ -51,7 +51,7 @@ public class EReference extends ElementBase {
 	}
 
 	@Override
-	protected boolean match(ElementBase other) {
+	protected boolean match(AbstractElement other) {
 		if (lookslike(other)) {
 			EReference that = (EReference) other;
 			return source.match(that.source) && target.match(that.target);

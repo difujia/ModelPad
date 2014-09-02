@@ -1,6 +1,6 @@
 package modelpad.activity.editor;
 
-import modelpad.metamodel.ElementBase;
+import modelpad.datamodel.AbstractElement;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
 import android.view.View.OnLongClickListener;
@@ -9,7 +9,7 @@ import com.google.common.base.Optional;
 
 class LongClickToDragListener implements OnLongClickListener {
 
-	private ElementBase mElement;
+	private AbstractElement mElement;
 	private Optional<CompletionHandler> mHandler;
 
 	private LongClickToDragListener(Builder builder) {
@@ -17,15 +17,15 @@ class LongClickToDragListener implements OnLongClickListener {
 		mHandler = builder.mHandler;
 	}
 
-	public static Builder builder(ElementBase element) {
+	public static Builder builder(AbstractElement element) {
 		return new Builder(element);
 	}
 
 	public static class Builder {
-		private ElementBase mElement;
+		private AbstractElement mElement;
 		private Optional<CompletionHandler> mHandler = Optional.absent();
 
-		public Builder(ElementBase element) {
+		public Builder(AbstractElement element) {
 			mElement = element;
 		}
 

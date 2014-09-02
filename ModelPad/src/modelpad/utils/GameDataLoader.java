@@ -3,7 +3,7 @@ package modelpad.utils;
 import java.io.IOException;
 import java.io.InputStream;
 
-import modelpad.metamodel.Level;
+import modelpad.datamodel.Level;
 import android.content.Context;
 import android.content.res.AssetManager;
 

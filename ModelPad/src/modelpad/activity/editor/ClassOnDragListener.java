@@ -1,12 +1,12 @@
 package modelpad.activity.editor;
 
-import modelpad.metamodel.EClass;
-import modelpad.metamodel.EReference;
-import modelpad.metamodel.ElementBase;
-import modelpad.metamodel.ReferenceViewModel;
-import modelpad.metamodel.SolutionManager;
+import modelpad.datamodel.AbstractElement;
+import modelpad.datamodel.EClass;
+import modelpad.datamodel.EReference;
+import modelpad.datamodel.SolutionManager;
+import modelpad.datamodel.ReferenceViewModel;
 import modelpad.view.ClassView;
-import modelpad.view.CompositeStateResponder;
+import modelpad.view.CompositeResponder;
 import modelpad.view.ElementView;
 import modelpad.view.LinkView;
 import modelpad.view.TouchView;
@@ -36,7 +36,7 @@ public class ClassOnDragListener implements OnDragListener {
 	@Override
 	public boolean onDrag(View v, DragEvent ev) {
 		DragData data = (DragData) ev.getLocalState();
-		ElementBase comingElement = data.getElement();
+		AbstractElement comingElement = data.getElement();
 
 		if (!(comingElement instanceof EClass)) {
 			return false;
@@ -86,7 +86,7 @@ public class ClassOnDragListener implements OnDragListener {
 
 						// link
 						LinkView linkView = new LinkView(mContext);
-						CompositeStateResponder responders = new CompositeStateResponder(labelForSelf, labelForThat,
+						CompositeResponder responders = new CompositeResponder(labelForSelf, labelForThat,
 								linkView);
 
 						// click delegate view
@@ -103,8 +103,8 @@ public class ClassOnDragListener implements OnDragListener {
 						LinkBinder binder = LinkBinder
 								.from(self, labelForThat, that, labelForSelf, linkView, touchArea);
 						self.registerNodeListener(binder);
-						labelForSelf.registerNodeListener(binder);
 						that.registerNodeListener(binder);
+						labelForSelf.registerNodeListener(binder);
 						labelForThat.registerNodeListener(binder);
 					}
 				} else {

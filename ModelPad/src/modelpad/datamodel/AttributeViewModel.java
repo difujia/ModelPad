@@ -1,6 +1,6 @@
-package modelpad.metamodel;
+package modelpad.datamodel;
 
-public class AttributeViewModel extends ViewModelBase {
+public class AttributeViewModel extends AbstractViewModel {
 
 	private EAttribute model;
 

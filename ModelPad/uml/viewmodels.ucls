@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<class-diagram version="1.1.6" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
-  associations="true" dependencies="false" nesting-relationships="true">  
-  <class id="1" language="java" name="modelpad.metamodel.AttributeViewModel" project="ModelPad" 
-    file="/ModelPad/src/modelpad/metamodel/AttributeViewModel.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="748" y="244"/>    
+<class-diagram version="1.1.6" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true" 
+  realizations="true" associations="true" dependencies="false" nesting-relationships="true">  
+  <class id="1" language="java" name="modelpad.datamodel.AttributeViewModel" project="ModelPad" 
+    file="/ModelPad/src/modelpad/datamodel/AttributeViewModel.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="710" y="241"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
       visibility="false">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="false"/>    
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="2" language="java" name="modelpad.metamodel.ClassViewModel" project="ModelPad" 
-    file="/ModelPad/src/modelpad/metamodel/ClassViewModel.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="734" y="127"/>    
+  <class id="2" language="java" name="modelpad.datamodel.ClassViewModel" project="ModelPad" 
+    file="/ModelPad/src/modelpad/datamodel/ClassViewModel.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="706" y="128"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
       visibility="false">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="false"/>    
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="3" language="java" name="modelpad.metamodel.ReferenceInfoViewModel" project="ModelPad" 
-    file="/ModelPad/src/modelpad/metamodel/ReferenceInfoViewModel.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="136" y="247"/>    
+  <class id="3" language="java" name="modelpad.datamodel.ReferenceInfoViewModel" project="ModelPad" 
+    file="/ModelPad/src/modelpad/datamodel/ReferenceInfoViewModel.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="166" y="237"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
       visibility="false">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="false"/>    
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="4" language="java" name="modelpad.metamodel.ReferenceViewModel" project="ModelPad" 
-    file="/ModelPad/src/modelpad/metamodel/ReferenceViewModel.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="144" y="131"/>    
+  <class id="4" language="java" name="modelpad.datamodel.ReferenceViewModel" project="ModelPad" 
+    file="/ModelPad/src/modelpad/datamodel/ReferenceViewModel.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="178" y="133"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
       visibility="false">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="false"/>    
+      <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <class id="5" language="java" name="modelpad.metamodel.ViewModelBase" project="ModelPad" 
-    file="/ModelPad/src/modelpad/metamodel/ViewModelBase.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="5" language="java" name="modelpad.datamodel.AbstractViewModel" project="ModelPad" 
+    file="/ModelPad/src/modelpad/datamodel/AbstractViewModel.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="454" y="209"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
       visibility="false">      
@@ -46,8 +46,8 @@
       <operations public="true" package="true" protected="true" private="true" static="false"/>    
     </display>  
   </class>  
-  <class id="6" language="java" name="modelpad.metamodel.ElementBase" project="ModelPad" 
-    file="/ModelPad/src/modelpad/metamodel/ElementBase.java" binary="false" corner="BOTTOM_RIGHT">    
+  <class id="6" language="java" name="modelpad.datamodel.AbstractElement" project="ModelPad" 
+    file="/ModelPad/src/modelpad/datamodel/AbstractElement.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="450" y="75"/>    
     <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
       visibility="false">      
@@ -55,26 +55,26 @@
       <operations public="false" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <association id="7">    
+  <generalization id="7">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="5"/>  
+  </generalization>  
+  <generalization id="8">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="5"/>  
+  </generalization>  
+  <generalization id="9">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="5"/>  
+  </generalization>  
+  <association id="10">    
     <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="8" name="model"/>      
-      <multiplicity id="9" minimum="0" maximum="1"/>    
+      <attribute id="11" name="model"/>      
+      <multiplicity id="12" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="6" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="10">    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="5"/>  
-  </generalization>  
-  <generalization id="11">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="5"/>  
-  </generalization>  
-  <generalization id="12">    
-    <end type="SOURCE" refId="1"/>    
-    <end type="TARGET" refId="5"/>  
-  </generalization>  
   <generalization id="13">    
     <end type="SOURCE" refId="2"/>    
     <end type="TARGET" refId="5"/>  

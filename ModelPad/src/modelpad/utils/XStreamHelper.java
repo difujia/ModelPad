@@ -1,12 +1,12 @@
 package modelpad.utils;
 
-import modelpad.metamodel.EAttribute;
-import modelpad.metamodel.EClass;
-import modelpad.metamodel.EReference;
-import modelpad.metamodel.EReferenceInfo;
-import modelpad.metamodel.ElementBase;
-import modelpad.metamodel.Level;
-import modelpad.metamodel.Solution;
+import modelpad.datamodel.AbstractElement;
+import modelpad.datamodel.EAttribute;
+import modelpad.datamodel.EClass;
+import modelpad.datamodel.EReference;
+import modelpad.datamodel.EReferenceInfo;
+import modelpad.datamodel.Level;
+import modelpad.datamodel.Solution;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -34,8 +34,8 @@ public class XStreamHelper {
 		xstream.useAttributeFor(String.class);
 		xstream.useAttributeFor(boolean.class);
 
-		xstream.omitField(ElementBase.class, "mObservable");
-		xstream.omitField(ElementBase.class, "mRecycler");
+		xstream.omitField(AbstractElement.class, "mObservable");
+		xstream.omitField(AbstractElement.class, "mRecycler");
 
 		xstream.aliasSystemAttribute("rid", "reference");	// to avoid confusion
 		return xstream;

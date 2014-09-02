@@ -1,58 +1,58 @@
-package modelpad.metamodel;
+package modelpad.datamodel;
 
 import java.io.Serializable;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Objects.ToStringHelper;
 
-public abstract class ElementBase implements Serializable {
+public abstract class AbstractElement implements Serializable {
 
 	private static final long serialVersionUID = -6464326406776920556L;
 
-	private ElementRecycler mRecycler;
-	private SimpleObservable mObservable = new SimpleObservable();
+	private ElementRecycler recycler;
+	private SimpleObservable observable = new SimpleObservable();
 
 	/**
 	 * Not to be initialised outside of this package.
 	 */
-	protected ElementBase() {}
+	protected AbstractElement() {}
 
-	protected abstract boolean match(ElementBase other);
+	protected abstract boolean match(AbstractElement other);
 
-	protected abstract boolean lookslike(ElementBase other);
+	protected abstract boolean lookslike(AbstractElement other);
 
 	public abstract String getName();
 
 	public void setRecycler(ElementRecycler recycler) {
-		mRecycler = recycler;
+		this.recycler = recycler;
 	}
 
 	public void dispose() {
-		mObservable.notifyInvalidated();
+		observable.notifyInvalidated();
 		unregisterAllObservers();
-		if (mRecycler != null) {
-			mRecycler.recycle(this);
+		if (recycler != null) {
+			recycler.recycle(this);
 		}
 	}
 
 	public void registerObserver(SimpleObserver... observers) {
 		for (SimpleObserver observer : observers) {
-			mObservable.registerObserver(observer);
+			observable.registerObserver(observer);
 		}
 	}
 
 	public void unregisterObserver(SimpleObserver... observers) {
 		for (SimpleObserver observer : observers) {
-			mObservable.unregisterObserver(observer);
+			observable.unregisterObserver(observer);
 		}
 	}
 
 	public void unregisterAllObservers() {
-		mObservable.unregisterAll();
+		observable.unregisterAll();
 	}
 
 	public void notifyDataChanged() {
-		mObservable.notifyChanged();
+		observable.notifyChanged();
 	}
 
 	/*
@@ -91,7 +91,7 @@ public abstract class ElementBase implements Serializable {
 	 * @return
 	 */
 	private Object readResolve() {
-		mObservable = new SimpleObservable();
+		observable = new SimpleObservable();
 		return this;
 	}
 }

@@ -1,4 +1,4 @@
-package modelpad.metamodel;
+package modelpad.datamodel;
 
 public abstract class SimpleObserver {
 

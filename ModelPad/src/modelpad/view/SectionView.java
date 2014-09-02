@@ -4,7 +4,7 @@ import modelpad.activity.R;
 import android.content.Context;
 import android.widget.LinearLayout;
 
-public class SectionView extends LinearLayout implements StateResponder {
+public class SectionView extends LinearLayout implements VisualResponder {
 
 	public SectionView(Context context) {
 		super(context);

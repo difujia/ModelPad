@@ -1,6 +1,6 @@
-package modelpad.metamodel;
+package modelpad.datamodel;
 
-public class ReferenceViewModel extends ViewModelBase {
+public class ReferenceViewModel extends AbstractViewModel {
 
 	private EReference model;
 

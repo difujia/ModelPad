@@ -1,7 +1,7 @@
 package modelpad.view;
 
 import modelpad.activity.R;
-import modelpad.metamodel.SimpleObserver;
+import modelpad.datamodel.SimpleObserver;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;

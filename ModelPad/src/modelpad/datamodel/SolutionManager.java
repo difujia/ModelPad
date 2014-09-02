@@ -1,26 +1,26 @@
-package modelpad.metamodel;
+package modelpad.datamodel;
 
 public class SolutionManager {
 
-	private Solution mSolution = new Solution();
+	private Solution solution = new Solution();
 
 	public Solution getSolution() {
-		return mSolution;
+		return solution;
 	}
 
 	public boolean hasClass(EClass clazz) {
-		return mSolution.hasEClass(clazz);
+		return solution.hasEClass(clazz);
 	}
 
 	public void addClass(final EClass clazz) {
 		if (hasClass(clazz)) {
 			throw new IllegalStateException("Class already in use");
 		}
-		mSolution.addEClass(clazz);
+		solution.addEClass(clazz);
 		clazz.registerObserver(new SimpleObserver() {
 			@Override
 			public void onInvalidated() {
-				mSolution.removeEClass(clazz);
+				solution.removeEClass(clazz);
 			}
 		});
 	}

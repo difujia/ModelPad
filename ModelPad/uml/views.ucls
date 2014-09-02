@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.6" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true" 
+  realizations="true" associations="true" dependencies="false" nesting-relationships="true">  
+  <class id="1" language="java" name="modelpad.view.ClassView" project="ModelPad" 
+    file="/ModelPad/src/modelpad/view/ClassView.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="404" y="208"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="2" language="java" name="modelpad.view.ElementView" project="ModelPad" 
+    file="/ModelPad/src/modelpad/view/ElementView.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="404" y="289"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="3" language="java" name="modelpad.view.LinkView" project="ModelPad" 
+    file="/ModelPad/src/modelpad/view/LinkView.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="204" y="168"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="4" language="java" name="modelpad.view.SectionView" project="ModelPad" 
+    file="/ModelPad/src/modelpad/view/SectionView.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="320" y="170"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="5" language="java" name="modelpad.view.CompositeResponder" project="ModelPad" 
+    file="/ModelPad/src/modelpad/view/CompositeResponder.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="150" y="334"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <interface id="6" language="java" name="modelpad.view.VisualResponder" project="ModelPad" 
+    file="/ModelPad/src/modelpad/view/VisualResponder.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="161" y="246"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </interface>  
+  <interface id="7" language="java" name="modelpad.view.ViewGeoChangeListener" project="ModelPad" 
+    file="/ModelPad/src/modelpad/view/ViewGeoChangeListener.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="548" y="108"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </interface>  
+  <interface id="8" language="java" name="modelpad.viewutils.Anchor" project="ModelPad" 
+    file="/ModelPad/src/modelpad/viewutils/Anchor.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="372" y="351"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </interface>  
+  <class id="9" language="java" name="modelpad.viewutils.ElementAnchor" project="ModelPad" 
+    file="/ModelPad/src/modelpad/viewutils/ElementAnchor.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="570" y="363"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="10" language="java" name="modelpad.viewutils.LinkAnchor" project="ModelPad" 
+    file="/ModelPad/src/modelpad/viewutils/LinkAnchor.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="574" y="329"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <interface id="11" language="java" name="modelpad.viewutils.LinkBinder.DynamicLink" project="ModelPad" 
+    file="/ModelPad/src/modelpad/viewutils/LinkBinder.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="103" y="106"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="false" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </interface>  
+  <class id="12" language="java" name="modelpad.viewutils.LinkBinder" project="ModelPad" 
+    file="/ModelPad/src/modelpad/viewutils/LinkBinder.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="285" y="109"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <class id="13" language="java" name="modelpad.datamodel.AbstractViewModel" project="ModelPad" 
+    file="/ModelPad/src/modelpad/datamodel/AbstractViewModel.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="582" y="285"/>    
+    <display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="false"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <association id="14">    
+    <end type="SOURCE" refId="12" navigable="false">      
+      <attribute id="15" name="mLink"/>      
+      <multiplicity id="16" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="11" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="17">    
+    <end type="SOURCE" refId="5" navigable="false">      
+      <attribute id="18" name="mResponders"/>      
+      <multiplicity id="19" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="6" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="20">    
+    <end type="SOURCE" refId="9"/>    
+    <end type="TARGET" refId="8"/>  
+  </realization>  
+  <association id="21">    
+    <bendpoint x="522" y="217"/>    
+    <end type="SOURCE" refId="2" navigable="false">      
+      <attribute id="22" name="listeners"/>      
+      <multiplicity id="23" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="7" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="24">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="6"/>  
+  </realization>  
+  <association id="25">    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="26" name="mTitleView"/>      
+      <multiplicity id="27" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="28">    
+    <end type="SOURCE" refId="2" navigable="false">      
+      <attribute id="29" name="mElementVM">        
+        <position height="18" width="81" x="420" y="291"/>      
+      </attribute>      
+      <multiplicity id="30" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="13" navigable="true"/>    
+    <display labels="false" multiplicity="false"/>  
+  </association>  
+  <realization id="31">    
+    <bendpoint x="280" y="326"/>    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="6"/>  
+  </realization>  
+  <realization id="32">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="11"/>  
+  </realization>  
+  <association id="33">    
+    <bendpoint x="404" y="86"/>    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="34" name="listeners"/>      
+      <multiplicity id="35" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="7" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="36">    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="7"/>  
+  </realization>  
+  <realization id="37">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="6"/>  
+  </realization>  
+  <realization id="38">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="6"/>  
+  </realization>  
+  <realization id="39">    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="8"/>  
+  </realization>  
+  <realization id="40">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="6"/>  
+  </realization>  
+  <classifier-display autosize="true" stereotype="false" package="false" initial-value="false" signature="true" 
+    accessors="true" visibility="true">    
+    <attributes public="false" package="false" protected="false" private="false" static="false"/>    
+    <operations public="false" package="false" protected="false" private="false" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

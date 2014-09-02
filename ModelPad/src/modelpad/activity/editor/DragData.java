@@ -1,14 +1,14 @@
 package modelpad.activity.editor;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import modelpad.metamodel.ElementBase;
+import modelpad.datamodel.AbstractElement;
 import android.view.View;
 
 import com.google.common.base.Optional;
 
 public class DragData {
 
-	private ElementBase mElement;
+	private AbstractElement mElement;
 	private View mSourceView;
 	private Optional<CompletionHandler> mHandler;
 
@@ -18,7 +18,7 @@ public class DragData {
 		mHandler = builder.mCompletionHandler;
 	}
 
-	public ElementBase getElement() {
+	public AbstractElement getElement() {
 		return mElement;
 	}
 
@@ -32,11 +32,11 @@ public class DragData {
 
 	public static class Builder {
 
-		private ElementBase mElement;
+		private AbstractElement mElement;
 		private View mSourceView;
 		private Optional<CompletionHandler> mCompletionHandler;
 
-		public Builder(ElementBase element, View sourceView) {
+		public Builder(AbstractElement element, View sourceView) {
 			mElement = element;
 			mSourceView = sourceView;
 		}

@@ -1,8 +1,8 @@
-package modelpad.metamodel;
+package modelpad.datamodel;
 
 import com.google.common.base.Objects.ToStringHelper;
 
-public class EAttribute extends ElementBase {
+public class EAttribute extends AbstractElement {
 
 	private static final long serialVersionUID = 2704337349056904489L;
 
@@ -32,7 +32,7 @@ public class EAttribute extends ElementBase {
 	}
 
 	@Override
-	protected boolean lookslike(ElementBase other) {
+	protected boolean lookslike(AbstractElement other) {
 		if (getClass() != other.getClass()) {
 			return false;
 		}
@@ -41,7 +41,7 @@ public class EAttribute extends ElementBase {
 	}
 
 	@Override
-	protected boolean match(ElementBase other) {
+	protected boolean match(AbstractElement other) {
 		if (lookslike(other)) {
 			EAttribute that = (EAttribute) other;
 			return owner.match(that.owner);

@@ -1,4 +1,4 @@
-package modelpad.metamodel;
+package modelpad.datamodel;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -43,8 +43,8 @@ public class Level implements Serializable {
 		this.question = question;
 	}
 
-	public Set<ElementBase> getAllElements() {
-		Set<ElementBase> elements = Sets.newHashSet();
+	public Set<AbstractElement> getAllElements() {
+		Set<AbstractElement> elements = Sets.newHashSet();
 		for (EClass c : expectedSolution.getStructuredClasses()) {
 			elements.add(c);
 			elements.addAll(c.getAttributes());
@@ -58,7 +58,7 @@ public class Level implements Serializable {
 		elements.addAll(surplusRefInfos);
 
 		// restore to initial state
-		for (ElementBase e : elements) {
+		for (AbstractElement e : elements) {
 			e.dispose();
 		}
 

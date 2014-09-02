@@ -1,4 +1,4 @@
-package modelpad.metamodel;
+package modelpad.datamodel;
 
 public class ModelFactory {
 
@@ -22,7 +22,7 @@ public class ModelFactory {
 		return new EReferenceInfo("", "", "");
 	}
 
-	public static ViewModelBase createViewModel(ElementBase model) {
+	public static AbstractViewModel createViewModel(AbstractElement model) {
 		if (model == headerClass || model == headerAttr || model == headerRef) {
 			return new HeaderViewModel(model);
 		} else if (model instanceof EClass) {
@@ -36,11 +36,11 @@ public class ModelFactory {
 		}
 	}
 
-	private static class HeaderViewModel extends ViewModelBase {
+	private static class HeaderViewModel extends AbstractViewModel {
 
-		private ElementBase mModel;
+		private AbstractElement mModel;
 
-		public HeaderViewModel(ElementBase model) {
+		public HeaderViewModel(AbstractElement model) {
 			super(model);
 			mModel = model;
 		}

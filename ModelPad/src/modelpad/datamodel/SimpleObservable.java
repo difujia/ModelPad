@@ -1,4 +1,4 @@
-package modelpad.metamodel;
+package modelpad.datamodel;
 
 import java.io.Serializable;
 import java.util.ArrayList;

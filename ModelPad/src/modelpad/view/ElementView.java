@@ -4,19 +4,19 @@ import java.util.HashSet;
 import java.util.Set;
 
 import modelpad.activity.R;
-import modelpad.metamodel.ViewModelBase;
-import modelpad.metamodel.SimpleObserver;
+import modelpad.datamodel.AbstractViewModel;
+import modelpad.datamodel.SimpleObserver;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class ElementView extends TextView implements StateResponder {
+public class ElementView extends TextView implements VisualResponder {
 
 	private static final String TAG = "ElementView";
 
-	private ViewModelBase mElementVM;
+	private AbstractViewModel mElementVM;
 	private SimpleObserver mObserver = new SimpleObserver() {
 		public void onChanged() {
 			update();
@@ -64,8 +64,8 @@ public class ElementView extends TextView implements StateResponder {
 		}
 	}
 
-	public void setViewModel(ViewModelBase viewModel) {
-		ViewModelBase oldViewModel = mElementVM;
+	public void setViewModel(AbstractViewModel viewModel) {
+		AbstractViewModel oldViewModel = mElementVM;
 		if (oldViewModel != null) {
 			oldViewModel.unregisterObserver(mObserver);
 		}

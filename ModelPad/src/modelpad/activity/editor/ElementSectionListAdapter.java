@@ -5,10 +5,10 @@ import java.util.Collection;
 import java.util.List;
 
 import modelpad.activity.R;
-import modelpad.metamodel.ElementBase;
-import modelpad.metamodel.ElementRecycler;
-import modelpad.metamodel.ModelFactory;
-import modelpad.metamodel.ViewModelBase;
+import modelpad.datamodel.AbstractElement;
+import modelpad.datamodel.AbstractViewModel;
+import modelpad.datamodel.ElementRecycler;
+import modelpad.datamodel.ModelFactory;
 import modelpad.view.ElementView;
 import modelpad.viewutils.ViewHelper;
 import android.content.Context;
@@ -19,14 +19,14 @@ import android.widget.ArrayAdapter;
 
 import com.hb.views.PinnedSectionListView.PinnedSectionListAdapter;
 
-public class ElementSectionListAdapter extends ArrayAdapter<ElementBase> implements PinnedSectionListAdapter,
+public class ElementSectionListAdapter extends ArrayAdapter<AbstractElement> implements PinnedSectionListAdapter,
 		ElementRecycler {
 
 	private static final String LOG = "ElementAdapter";
 	private static final int ITEM = 0;
 	private static final int SECTION = 1;
 
-	private List<ElementBase> sectionObjects = new ArrayList<>();
+	private List<AbstractElement> sectionObjects = new ArrayList<>();
 
 	public ElementSectionListAdapter(Context context) {
 		super(context, 0);
@@ -39,7 +39,7 @@ public class ElementSectionListAdapter extends ArrayAdapter<ElementBase> impleme
 
 	@Override
 	public int getItemViewType(int position) {
-		ElementBase item = getItem(position);
+		AbstractElement item = getItem(position);
 		return sectionObjects.contains(item) ? SECTION : ITEM;
 	}
 
@@ -57,12 +57,12 @@ public class ElementSectionListAdapter extends ArrayAdapter<ElementBase> impleme
 			view = (ElementView) convertView;
 		}
 
-		final ElementBase item = getItem(position);
+		final AbstractElement item = getItem(position);
 
 		// prevent unwanted registration because of scrolling
 		item.unregisterAllObservers();
 
-		final ViewModelBase viewModel = ModelFactory.createViewModel(item);
+		final AbstractViewModel viewModel = ModelFactory.createViewModel(item);
 		view.setViewModel(viewModel);
 //		final int cc = counter++;
 //		Log.d(LOG, "cc: " + cc + ", " + viewModel.getStringDisplay());
@@ -87,14 +87,14 @@ public class ElementSectionListAdapter extends ArrayAdapter<ElementBase> impleme
 		return view;
 	}
 
-	public void addSectionObject(ElementBase sectionObj) {
+	public void addSectionObject(AbstractElement sectionObj) {
 		sectionObjects.add(sectionObj);
 		super.add(sectionObj);
 	}
 
 	@Override
-	public void add(ElementBase item) {
-		for (ElementBase sectionObj : sectionObjects) {
+	public void add(AbstractElement item) {
+		for (AbstractElement sectionObj : sectionObjects) {
 			if (isItemOfSection(item, sectionObj)) {
 				int sectionPosition = getPosition(sectionObj);
 				super.insert(item, sectionPosition + 1);
@@ -106,21 +106,21 @@ public class ElementSectionListAdapter extends ArrayAdapter<ElementBase> impleme
 	}
 
 	@Override
-	public void addAll(Collection<? extends ElementBase> collection) {
-		for (ElementBase obj : collection) {
+	public void addAll(Collection<? extends AbstractElement> collection) {
+		for (AbstractElement obj : collection) {
 			add(obj);
 		}
 	}
 
 	@Override
-	public void addAll(ElementBase... items) {
-		for (ElementBase obj : items) {
+	public void addAll(AbstractElement... items) {
+		for (AbstractElement obj : items) {
 			add(obj);
 		}
 	}
 
 	@Override
-	public void remove(ElementBase item) {
+	public void remove(AbstractElement item) {
 		if (sectionObjects.contains(item)) {
 			throw new IllegalArgumentException("Cannot remove section objects.");
 		}
@@ -138,12 +138,12 @@ public class ElementSectionListAdapter extends ArrayAdapter<ElementBase> impleme
 		return viewType == SECTION;
 	}
 
-	private boolean isItemOfSection(ElementBase item, ElementBase sectionItem) {
+	private boolean isItemOfSection(AbstractElement item, AbstractElement sectionItem) {
 		return item.getClass() == sectionItem.getClass();
 	}
 
 	@Override
-	public void recycle(ElementBase item) {
+	public void recycle(AbstractElement item) {
 		if (getPosition(item) == -1) {
 			add(item);
 		}

@@ -1,11 +1,11 @@
 package modelpad.activity.editor;
 
-import modelpad.metamodel.EAttribute;
-import modelpad.metamodel.EClass;
-import modelpad.metamodel.ElementBase;
-import modelpad.metamodel.ModelFactory;
-import modelpad.metamodel.SolutionManager;
-import modelpad.metamodel.ViewModelBase;
+import modelpad.datamodel.AbstractElement;
+import modelpad.datamodel.AbstractViewModel;
+import modelpad.datamodel.EAttribute;
+import modelpad.datamodel.EClass;
+import modelpad.datamodel.ModelFactory;
+import modelpad.datamodel.SolutionManager;
 import modelpad.view.ElementView;
 import modelpad.view.SectionView;
 import modelpad.viewutils.ElementAnchor;
@@ -31,7 +31,7 @@ public class AttrSectionOnDragListener implements OnDragListener {
 	@Override
 	public boolean onDrag(View v, DragEvent ev) {
 		DragData data = (DragData) ev.getLocalState();
-		ElementBase comingElement = data.getElement();
+		AbstractElement comingElement = data.getElement();
 		if (!(comingElement instanceof EAttribute)) {
 			return false;
 		}
@@ -58,7 +58,7 @@ public class AttrSectionOnDragListener implements OnDragListener {
 
 				mManager.addAttrToClass(attr, mClass);
 				final ElementView attrView;
-				final ViewModelBase viewModel = ModelFactory.createViewModel(attr);
+				final AbstractViewModel viewModel = ModelFactory.createViewModel(attr);
 				attrView = ViewHelper.createClassSectionItem(mContext);
 				attrView.setViewModel(viewModel);
 				attrView.setOnLongClickListener(LongClickToDragListener.builder(attr).with(new CompletionHandler() {

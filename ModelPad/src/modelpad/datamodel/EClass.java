@@ -1,4 +1,4 @@
-package modelpad.metamodel;
+package modelpad.datamodel;
 
 import java.util.Collections;
 import java.util.Set;
@@ -6,7 +6,7 @@ import java.util.Set;
 import com.google.common.base.Objects.ToStringHelper;
 import com.google.common.collect.Sets;
 
-public class EClass extends ElementBase {
+public class EClass extends AbstractElement {
 
 	private static final long serialVersionUID = 803979828454442810L;
 
@@ -46,12 +46,12 @@ public class EClass extends ElementBase {
 	}
 
 	@Override
-	protected boolean match(ElementBase other) {
+	protected boolean match(AbstractElement other) {
 		return lookslike(other);
 	}
 
 	@Override
-	protected boolean lookslike(ElementBase other) {
+	protected boolean lookslike(AbstractElement other) {
 		if (getClass() != other.getClass()) {
 			return false;
 		}

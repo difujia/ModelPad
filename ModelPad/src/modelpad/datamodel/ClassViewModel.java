@@ -1,6 +1,6 @@
-package modelpad.metamodel;
+package modelpad.datamodel;
 
-public class ClassViewModel extends ViewModelBase {
+public class ClassViewModel extends AbstractViewModel {
 
 	private EClass model;
 

@@ -1,8 +1,8 @@
-package modelpad.metamodel;
+package modelpad.datamodel;
 
-public abstract class ViewModelBase {
+public abstract class AbstractViewModel {
 
-	protected ElementBase model;
+	protected AbstractElement model;
 	private SimpleObservable mObservable = new SimpleObservable();
 	private SimpleObserver mObserver = new SimpleObserver() {
 
@@ -16,7 +16,7 @@ public abstract class ViewModelBase {
 		};
 	};
 
-	public ViewModelBase(ElementBase model) {
+	public AbstractViewModel(AbstractElement model) {
 		this.model = model;
 		this.model.registerObserver(mObserver);
 	}

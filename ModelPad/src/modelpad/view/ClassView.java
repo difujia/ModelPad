@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import modelpad.activity.R;
-import modelpad.metamodel.ClassViewModel;
-import modelpad.metamodel.SimpleObserver;
+import modelpad.datamodel.ClassViewModel;
+import modelpad.datamodel.SimpleObserver;
 import modelpad.viewutils.ViewHelper;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -21,7 +21,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class ClassView extends LinearLayout implements StateResponder {
+public class ClassView extends LinearLayout implements VisualResponder {
 
 	private static final String TAG = "ClassView";
 	private ElementView mTitleView;

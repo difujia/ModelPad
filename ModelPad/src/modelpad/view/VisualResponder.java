@@ -1,6 +1,6 @@
 package modelpad.view;
 
-public interface StateResponder {
+public interface VisualResponder {
 
 	void beActive();
 

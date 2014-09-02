@@ -1,4 +1,4 @@
-package modelpad.metamodel;
+package modelpad.datamodel;
 
 import java.util.Collection;
 import java.util.Set;
@@ -30,8 +30,8 @@ public class Validator {
 		}
 	};
 
-	private Solution userSolution;
-	private Level level;
+	private Solution playerSolution;
+	private Solution expectedSolution;
 
 	/*
 	 * Results collected. These collections contains objects in player's model
@@ -51,32 +51,33 @@ public class Validator {
 	private Set<EReferenceInfo> misplacedRefInfos;
 
 	/*
-	 * not sure to provide this, because they are not the objects in player's model, which maybe confusing
+	 * objects of missing elements are in the expected solutions
 	 */
 	private Set<EClass> missingClasses;
 	private Set<EAttribute> missingAttrs;
 	private Set<EReferenceInfo> missingRefInfos;
 
-	private Set<ElementBase> allExpected;
+	private Set<AbstractElement> allExpected;
 
-	public Validator(Solution userSolution, Level level) {
-		this.userSolution = userSolution;
-		this.level = level;
+	public Validator(Solution playerSolution, Solution expected) {
+		this.playerSolution = playerSolution;
+		this.expectedSolution = expected;
 		validate();
 	}
 
-	private void validate() {
+	public void validate() {
 
 		Set<EClass> userClasses = Sets.newHashSet();
 		Set<EAttribute> userAttrs = Sets.newHashSet();
 		Set<EReference> userRefs = Sets.newHashSet();
-		unbox(userSolution, userClasses, userAttrs, userRefs);
+		unbox(playerSolution, userClasses, userAttrs, userRefs);
 		Set<EReferenceInfo> userRefInfos = FluentIterable.from(userRefs).transform(toRefInfo).toSet();
 
 		Set<EClass> expClasses = Sets.newHashSet();
 		Set<EAttribute> expAttrs = Sets.newHashSet();
 		Set<EReference> expRefs = Sets.newHashSet();
-		unbox(level.getExpectedSolution(), expClasses, expAttrs, expRefs);
+		unbox(expectedSolution, expClasses, expAttrs, expRefs);
+		Set<EReferenceInfo> expRefInfos = FluentIterable.from(expRefs).transform(toRefInfo).toSet();
 
 		allExpected = ImmutableSet.copyOf(Iterables.concat(expClasses, expAttrs, expRefs));
 
@@ -85,16 +86,18 @@ public class Validator {
 		matchedRefs = FluentIterable.from(userRefs).filter(matchAnyIn(expRefs)).toSet();
 		Set<EReferenceInfo> matchedRefInfos = FluentIterable.from(matchedRefs).transform(toRefInfo).toSet();
 
-		unexpectedClasses = FluentIterable.from(userClasses).filter(lookslikeAnyIn(level.getSurplusClasses())).toSet();
-		unexpectedAttrs = FluentIterable.from(userAttrs).filter(lookslikeAnyIn(level.getSurplusAttrs())).toSet();
-		unexpectedRefInfos = FluentIterable.from(userRefInfos).filter(lookslikeAnyIn(level.getSurplusRefInfos()))
-				.toSet();
+		unexpectedClasses = FluentIterable.from(userClasses).filter(notLookslikeAnyIn(expClasses)).toSet();
+		unexpectedAttrs = FluentIterable.from(userAttrs).filter(notLookslikeAnyIn(expAttrs)).toSet();
+		unexpectedRefInfos = FluentIterable.from(userRefInfos).filter(notPlaceHolder).filter(notLookslikeAnyIn(expRefInfos)).toSet();
 
 		misplacedAttrs = FluentIterable.from(userAttrs).filter(notIn(matchedAttrs)).filter(notIn(unexpectedAttrs))
 				.toSet();
 		misplacedRefInfos = FluentIterable.from(userRefInfos).filter(notPlaceHolder).filter(notIn(matchedRefInfos))
 				.filter(notIn(unexpectedRefInfos)).toSet();
 
+		missingClasses = FluentIterable.from(expClasses).filter(notLookslikeAnyIn(userClasses)).toSet();
+		missingAttrs = FluentIterable.from(expAttrs).filter(notLookslikeAnyIn(userAttrs)).toSet();
+		missingRefInfos = FluentIterable.from(expRefInfos).filter(notLookslikeAnyIn(userRefInfos)).toSet();
 	}
 
 	private <T> Predicate<T> notIn(final Collection<T> c) {
@@ -106,7 +109,7 @@ public class Validator {
 		};
 	}
 
-	private <T extends ElementBase> Predicate<T> matchAnyIn(final Collection<T> c) {
+	private <T extends AbstractElement> Predicate<T> matchAnyIn(final Collection<T> c) {
 		return new Predicate<T>() {
 			@Override
 			public boolean apply(T arg) {
@@ -118,7 +121,7 @@ public class Validator {
 		};
 	}
 
-	private <T extends ElementBase> Predicate<T> lookslikeAnyIn(final Collection<T> c) {
+	private <T extends AbstractElement> Predicate<T> lookslikeAnyIn(final Collection<T> c) {
 		return new Predicate<T>() {
 
 			@Override
@@ -127,6 +130,19 @@ public class Validator {
 					if (arg.lookslike(element)) return true;
 				}
 				return false;
+			}
+		};
+	}
+
+	private <T extends AbstractElement> Predicate<T> notLookslikeAnyIn(final Collection<T> c) {
+		return new Predicate<T>() {
+
+			@Override
+			public boolean apply(T arg) {
+				for (T element : c) {
+					if (arg.lookslike(element)) return false;
+				}
+				return true;
 			}
 		};
 	}
@@ -140,11 +156,11 @@ public class Validator {
 		}
 	}
 
-	public Set<ElementBase> getAllExpected() {
+	public Set<AbstractElement> getAllExpected() {
 		return allExpected;
 	}
 
-	public Set<ElementBase> getAllMatched() {
+	public Set<AbstractElement> getAllMatched() {
 		return ImmutableSet.copyOf(Iterables.concat(matchedClasses, matchedAttrs, matchedRefs));
 	}
 
@@ -160,7 +176,7 @@ public class Validator {
 		return matchedRefs;
 	}
 
-	public Set<ElementBase> getAllUnexpected() {
+	public Set<AbstractElement> getAllUnexpected() {
 		return ImmutableSet.copyOf(Iterables.concat(unexpectedClasses, unexpectedAttrs, unexpectedRefInfos));
 	}
 
@@ -184,7 +200,23 @@ public class Validator {
 		return misplacedRefInfos;
 	}
 
-	public Set<ElementBase> getAllMisplaced() {
+	public Set<AbstractElement> getAllMisplaced() {
 		return ImmutableSet.copyOf(Iterables.concat(misplacedAttrs, misplacedRefInfos));
+	}
+
+	public Set<EClass> getMissingClasses() {
+		return missingClasses;
+	}
+
+	public Set<EAttribute> getMissingAttrs() {
+		return missingAttrs;
+	}
+
+	public Set<EReferenceInfo> getMissingRefInfos() {
+		return missingRefInfos;
+	}
+
+	public Set<AbstractElement> getAllMissing() {
+		return ImmutableSet.copyOf(Iterables.concat(missingClasses, missingAttrs, missingRefInfos));
 	}
 }

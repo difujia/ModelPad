@@ -1,9 +1,9 @@
 package modelpad.activity.editor;
 
-import modelpad.metamodel.EReference;
-import modelpad.metamodel.EReferenceInfo;
-import modelpad.metamodel.ElementBase;
-import modelpad.metamodel.SolutionManager;
+import modelpad.datamodel.AbstractElement;
+import modelpad.datamodel.EReference;
+import modelpad.datamodel.EReferenceInfo;
+import modelpad.datamodel.SolutionManager;
 import modelpad.view.ElementView;
 import modelpad.viewutils.ElementAnchor;
 import android.content.Context;
@@ -26,7 +26,7 @@ public class RefLabelOnDragListener implements OnDragListener {
 	@Override
 	public boolean onDrag(View v, DragEvent ev) {
 		DragData data = (DragData) ev.getLocalState();
-		ElementBase comingElement = data.getElement();
+		AbstractElement comingElement = data.getElement();
 		if (!(comingElement instanceof EReferenceInfo)) {
 			return false;
 		}

@@ -1,10 +1,10 @@
 package modelpad.activity.editor;
 
 import modelpad.activity.R;
-import modelpad.metamodel.Level;
-import modelpad.metamodel.ModelFactory;
-import modelpad.metamodel.SolutionManager;
-import modelpad.metamodel.Validator;
+import modelpad.datamodel.Level;
+import modelpad.datamodel.ModelFactory;
+import modelpad.datamodel.SolutionManager;
+import modelpad.datamodel.Validator;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +12,6 @@ import android.support.v4.app.NavUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -48,7 +47,7 @@ public class EditorActivity extends Activity {
 		PinnedSectionListView listView = (PinnedSectionListView) findViewById(R.id.editor_list);
 		listView.setAdapter(adapter);
 
-		ViewGroup canvas = (FrameLayout) findViewById(R.id.editor_canvas);
+		FrameLayout canvas = (FrameLayout) findViewById(R.id.editor_canvas);
 		canvas.setOnDragListener(new CanvasOnDragListener(this, canvas, manager));
 
 		mUntouchLevel = (Level) getIntent().getSerializableExtra("unmodifiableLevel");
@@ -81,7 +80,8 @@ public class EditorActivity extends Activity {
 				NavUtils.navigateUpTo(this, intent);
 				return true;
 			case R.id.menu_editor_commit:
-				ValidationFragment dialog = ValidationFragment.create(new Validator(manager.getSolution(), mUntouchLevel));
+				ValidationFragment dialog = ValidationFragment.create(new Validator(manager.getSolution(),
+						mUntouchLevel.getExpectedSolution()));
 				dialog.show(getFragmentManager(), "dialog");
 				return true;
 		}

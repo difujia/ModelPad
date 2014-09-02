@@ -7,7 +7,7 @@ import com.google.common.collect.Lists;
 
 import modelpad.activity.R;
 import modelpad.activity.editor.EditorActivity;
-import modelpad.metamodel.Level;
+import modelpad.datamodel.Level;
 import modelpad.utils.GameDataLoader;
 import android.app.Activity;
 import android.content.Context;

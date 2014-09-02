@@ -3,8 +3,8 @@ package modelpad.activity.editor;
 import java.util.Collections;
 import java.util.Set;
 
-import modelpad.metamodel.ElementBase;
-import modelpad.view.StateResponder;
+import modelpad.datamodel.AbstractElement;
+import modelpad.view.VisualResponder;
 import modelpad.viewutils.Anchor;
 import android.content.Context;
 import android.graphics.Color;
@@ -27,8 +27,8 @@ public class ClickToRemoveListener implements OnClickListener {
 
 	private Context mContext;
 	private Anchor mAnchor;
-	private Set<ElementBase> mElements;
-	private Optional<StateResponder> mResponder;
+	private Set<AbstractElement> mElements;
+	private Optional<VisualResponder> mResponder;
 	private Optional<CompletionHandler> mHandler;
 
 	private ClickToRemoveListener(Builder builder) {
@@ -42,8 +42,8 @@ public class ClickToRemoveListener implements OnClickListener {
 	public static class Builder {
 		private Context mContext;
 		private Anchor mAnchor;
-		private Set<ElementBase> mElements = Sets.newHashSet();;
-		private Optional<StateResponder> mResponder = Optional.absent();
+		private Set<AbstractElement> mElements = Sets.newHashSet();;
+		private Optional<VisualResponder> mResponder = Optional.absent();
 		private Optional<CompletionHandler> mHandler = Optional.absent();
 
 		public Builder(Context mContext, Anchor mAnchor) {
@@ -51,7 +51,7 @@ public class ClickToRemoveListener implements OnClickListener {
 			this.mAnchor = mAnchor;
 		}
 
-		public Builder with(StateResponder responder) {
+		public Builder with(VisualResponder responder) {
 			this.mResponder = Optional.of(responder);
 			return this;
 		}
@@ -61,7 +61,7 @@ public class ClickToRemoveListener implements OnClickListener {
 			return this;
 		}
 
-		public Builder add(ElementBase... elements) {
+		public Builder add(AbstractElement... elements) {
 			Collections.addAll(mElements, elements);
 			return this;
 		}
@@ -96,7 +96,7 @@ public class ClickToRemoveListener implements OnClickListener {
 
 			@Override
 			public void onClick(View v) {
-				for (ElementBase element : mElements) {
+				for (AbstractElement element : mElements) {
 					element.dispose();
 				}
 				popup.dismiss();

@@ -2,7 +2,7 @@ package modelpad.activity.editor;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import modelpad.activity.R;
-import modelpad.metamodel.Validator;
+import modelpad.datamodel.Validator;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
