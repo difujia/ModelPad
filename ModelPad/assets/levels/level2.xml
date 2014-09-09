@@ -1,50 +1,42 @@
 <level id="1" title="College and Uni" subtitle="This is simply a piece of description." question="This is a simple puzzle about bank account and client.">
   <expectedSolution id="2">
     <class id="3" name="College">
-      <attributes id="4">
-        <attribute id="5" name="numOfStudents" type="int">
-          <owner rid="3"/>
-        </attribute>
-        <attribute id="6" name="numOfDepartments" type="int">
-          <owner rid="3"/>
-        </attribute>
-      </attributes>
-      <references id="7">
-        <reference id="8">
-          <source rid="3"/>
-          <target id="9" name="University">
-            <attributes id="10">
-              <attribute id="11" name="numOfStaff" type="int">
-                <owner rid="9"/>
-              </attribute>
-            </attributes>
-            <references id="12">
-              <reference id="13">
-                <source rid="9"/>
-                <target rid="3"/>
-                <info id="14" name="colleges" containment="false" lowerbound="1" upperbound="*">
-                  <owner rid="13"/>
-                </info>
-                <opposite rid="8"/>
-              </reference>
-            </references>
-          </target>
-          <info id="15" name="owner" containment="false" lowerbound="1" upperbound="1">
-            <owner rid="8"/>
-          </info>
-          <opposite rid="13"/>
-        </reference>
-      </references>
+      <attribute id="4" name="numOfStudents" type="int">
+        <owner rid="3"/>
+      </attribute>
+      <attribute id="5" name="numOfDepartments" type="int">
+        <owner rid="3"/>
+      </attribute>
+      <reference id="6">
+        <source rid="3"/>
+        <target id="7" name="University">
+          <attribute id="8" name="numOfStaff" type="int">
+            <owner rid="7"/>
+          </attribute>
+          <reference id="9">
+            <source rid="7"/>
+            <target rid="3"/>
+            <opposite rid="6"/>
+            <info id="10" name="colleges" containment="false" lowerbound="1" upperbound="*">
+              <owner rid="9"/>
+            </info>
+          </reference>
+        </target>
+        <opposite rid="9"/>
+        <info id="11" name="owner" containment="false" lowerbound="1" upperbound="1">
+          <owner rid="6"/>
+        </info>
+      </reference>
     </class>
-    <class rid="9"/>
+    <class rid="7"/>
   </expectedSolution>
-  <surplusClasses id="16">
-    <class id="17" name="Student"/>
+  <surplusClasses id="12">
+    <class id="13" name="Student"/>
   </surplusClasses>
-  <surplusAttrs id="18">
-    <attribute id="19" name="isMember" type="boolean"/>
+  <surplusAttrs id="14">
+    <attribute id="15" name="isMember" type="boolean"/>
   </surplusAttrs>
-  <surplusRefInfos id="20">
-    <info id="21" name="major" containment="false" lowerbound="1" upperbound="1"/>
+  <surplusRefInfos id="16">
+    <info id="17" name="major" containment="false" lowerbound="1" upperbound="1"/>
   </surplusRefInfos>
 </level>

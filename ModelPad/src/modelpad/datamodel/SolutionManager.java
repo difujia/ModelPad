@@ -1,5 +1,7 @@
 package modelpad.datamodel;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 public class SolutionManager {
 
 	private Solution solution = new Solution();
@@ -13,9 +15,7 @@ public class SolutionManager {
 	}
 
 	public void addClass(final EClass clazz) {
-		if (hasClass(clazz)) {
-			throw new IllegalStateException("Class already in use");
-		}
+		checkArgument(!hasClass(clazz), "Class already in solution.");
 		solution.addEClass(clazz);
 		clazz.registerObserver(new SimpleObserver() {
 			@Override

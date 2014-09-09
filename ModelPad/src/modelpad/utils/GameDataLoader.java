@@ -11,10 +11,12 @@ import com.thoughtworks.xstream.XStream;
 
 public class GameDataLoader {
 
+	private GameDataLoader() {}
+
 	public static Level getLevelByFilePath(Context ctx, String path) throws IOException {
 		AssetManager asset = ctx.getAssets();
 		InputStream stream = asset.open(path);
-		XStream xstream = XStreamHelper.getConfiguredXStream();
+		XStream xstream = XStreamHelper.getReusableConfiguredXStream();
 		Level level = (Level) xstream.fromXML(stream);
 		return level;
 	}

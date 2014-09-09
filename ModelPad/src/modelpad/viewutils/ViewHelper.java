@@ -1,6 +1,5 @@
 package modelpad.viewutils;
 
-import modelpad.activity.R;
 import modelpad.view.ClassView;
 import modelpad.view.ElementView;
 import modelpad.view.SectionView;
@@ -10,17 +9,18 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView.LayoutParams;
-import android.widget.LinearLayout;
 
 public class ViewHelper {
+	private ViewHelper() {}
 
 	public static ClassView createClassView(Context ctx) {
 		ClassView view = new ClassView(ctx);
 		LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		view.setLayoutParams(lp);
-		view.setBackgroundResource(R.drawable.bg_class_normal);
-		view.setDividerDrawable(ctx.getResources().getDrawable(R.drawable.divider_horizontal));
-		view.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+		// view.setBackgroundResource(R.drawable.bg_class_normal);
+		// view.setDividerDrawable(ctx.getResources().getDrawable(R.drawable.divider_horizontal));
+		// view.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+		// view.setMinimumWidth(120);
 		return view;
 	}
 
@@ -44,6 +44,7 @@ public class ViewHelper {
 
 	public static ViewGroup createClassSection(Context ctx) {
 		SectionView section = new SectionView(ctx);
+		section.setMinimumHeight(48);
 		return section;
 	}
 

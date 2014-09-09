@@ -3,8 +3,8 @@ package modelpad.activity.editor;
 import modelpad.datamodel.AbstractElement;
 import modelpad.datamodel.EClass;
 import modelpad.datamodel.EReference;
+import modelpad.datamodel.ModelFactory;
 import modelpad.datamodel.SolutionManager;
-import modelpad.datamodel.ReferenceViewModel;
 import modelpad.view.ClassView;
 import modelpad.view.CompositeResponder;
 import modelpad.view.ElementView;
@@ -64,7 +64,7 @@ public class ClassOnDragListener implements OnDragListener {
 				self.beActive();
 				break;
 			case DragEvent.ACTION_DROP:
-				ClassView that = (ClassView) data.getSourceView().getParent();
+				ClassView that = (ClassView) data.getSourceView().getParent().getParent();
 				if (self != that) {
 					if (mManager.isReferenced(mClass, thatClass)) {
 						// TODO two classes already cross-referenced
@@ -75,19 +75,18 @@ public class ClassOnDragListener implements OnDragListener {
 
 						ElementView labelForSelf = ViewHelper.createRefLabelView(mContext);
 						labelForSelf.setOnDragListener(new RefLabelOnDragListener(mContext, selfToThat, mManager));
-						labelForSelf.setViewModel(new ReferenceViewModel(selfToThat));
+						labelForSelf.setViewModel(ModelFactory.createViewModel(selfToThat));
 
 						ElementView labelForThat = ViewHelper.createRefLabelView(mContext);
 						labelForThat.setOnDragListener(new RefLabelOnDragListener(mContext, thatToSelf, mManager));
-						labelForThat.setViewModel(new ReferenceViewModel(thatToSelf));
+						labelForThat.setViewModel(ModelFactory.createViewModel(thatToSelf));
 
 						mCanvas.addView(labelForSelf, 0);
 						mCanvas.addView(labelForThat, 0);
 
 						// link
 						LinkView linkView = new LinkView(mContext);
-						CompositeResponder responders = new CompositeResponder(labelForSelf, labelForThat,
-								linkView);
+						CompositeResponder responders = new CompositeResponder(labelForSelf, labelForThat, linkView);
 
 						// click delegate view
 						TouchView touchArea = ViewHelper.createTouchArea(mContext);
@@ -112,6 +111,7 @@ public class ClassOnDragListener implements OnDragListener {
 
 				}
 				data.complete(true);
+				BroadcastHelper.notify(mContext);
 				break;
 			case DragEvent.ACTION_DRAG_ENDED:
 				// TODO remove dash line

@@ -3,7 +3,7 @@ package modelpad.datamodel;
 public class ModelFactory {
 
 	private static final EClass headerClass = new EClass("Classes");
-	private static final EAttribute headerAttr = new EAttribute("Attributes", null);
+	private static final EAttribute headerAttr = new EAttribute("Attributes", "");
 	private static final EReferenceInfo headerRef = new EReferenceInfo("References", "", "");
 
 	public static EClass getHeaderClass() {
@@ -31,8 +31,10 @@ public class ModelFactory {
 			return new AttributeViewModel((EAttribute) model);
 		} else if (model instanceof EReferenceInfo) {
 			return new ReferenceInfoViewModel((EReferenceInfo) model);
+		} else if (model instanceof EReference) {
+			return new ReferenceViewModel((EReference) model);
 		} else {
-			return null;
+			throw new IllegalArgumentException();
 		}
 	}
 

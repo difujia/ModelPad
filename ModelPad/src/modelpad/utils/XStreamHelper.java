@@ -12,13 +12,27 @@ import com.thoughtworks.xstream.XStream;
 
 public class XStreamHelper {
 
+	private static volatile XStream instance;
+
+	private XStreamHelper() {}
+
+	public static XStream getReusableConfiguredXStream() {
+		if (instance == null) {
+			synchronized (XStreamHelper.class) {
+				if (instance == null) instance = getNewConfiguredXStream();
+			}
+		}
+		return instance;
+	}
+
 	/**
 	 * Get a new ready-to-use xstream instance.
+	 * 
 	 * @return
 	 */
-	public static XStream getConfiguredXStream() {
+	public static XStream getNewConfiguredXStream() {
 		// changes to this method result in recreate all xml level files!
-		
+
 		XStream xstream = new XStream();
 		xstream.setMode(XStream.ID_REFERENCES);
 
@@ -30,12 +44,14 @@ public class XStreamHelper {
 		xstream.alias("level", Level.class);
 
 		xstream.addImplicitCollection(Solution.class, "structure", EClass.class);
+		xstream.addImplicitCollection(EClass.class, "references", EReference.class);
+		xstream.addImplicitCollection(EClass.class, "attributes", EAttribute.class);
 
 		xstream.useAttributeFor(String.class);
 		xstream.useAttributeFor(boolean.class);
 
-		xstream.omitField(AbstractElement.class, "mObservable");
-		xstream.omitField(AbstractElement.class, "mRecycler");
+		xstream.omitField(AbstractElement.class, "observable");
+		xstream.omitField(AbstractElement.class, "recycler");
 
 		xstream.aliasSystemAttribute("rid", "reference");	// to avoid confusion
 		return xstream;

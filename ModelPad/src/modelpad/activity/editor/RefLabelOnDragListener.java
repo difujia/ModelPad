@@ -67,6 +67,7 @@ public class RefLabelOnDragListener implements OnDragListener {
 
 				self.setOnLongClickListener(LongClickToDragListener.builder(newInfo).with(handler).build());
 				data.complete(true);
+				BroadcastHelper.notify(mContext);
 				break;
 			case DragEvent.ACTION_DRAG_ENDED:
 				self.beNormal();

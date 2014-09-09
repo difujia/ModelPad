@@ -1,5 +1,7 @@
 package modelpad.datamodel;
 
+import static com.google.common.base.Preconditions.checkState;
+
 public abstract class AbstractViewModel {
 
 	protected AbstractElement model;
@@ -22,6 +24,7 @@ public abstract class AbstractViewModel {
 	}
 
 	public void releaseModel() {
+		checkState(model != null, "model has already been released!");
 		model.unregisterObserver(mObserver);
 		model = null;
 	}

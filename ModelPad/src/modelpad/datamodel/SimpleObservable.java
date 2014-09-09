@@ -3,11 +3,13 @@ package modelpad.datamodel;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import com.google.common.collect.Lists;
+
 public class SimpleObservable implements Serializable {
 
 	private static final long serialVersionUID = 6043606514391369532L;
 
-	private ArrayList<SimpleObserver> mObservers = new ArrayList<>();
+	private ArrayList<SimpleObserver> mObservers = Lists.newArrayList();
 
 	public void registerObserver(SimpleObserver observer) {
 		if (observer == null) {

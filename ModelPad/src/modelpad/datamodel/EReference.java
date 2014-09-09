@@ -1,5 +1,9 @@
 package modelpad.datamodel;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+
 import com.google.common.base.Objects.ToStringHelper;
 
 public class EReference extends AbstractElement {
@@ -17,8 +21,8 @@ public class EReference extends AbstractElement {
 	protected EReference() {}
 
 	protected EReference(EClass source, EClass target) {
-		this.source = source;
-		this.target = target;
+		this.source = checkNotNull(source);
+		this.target = checkNotNull(target);
 		this.info = ModelFactory.createInfoPlaceHolder();
 		this.info.setOwner(this);
 	}
@@ -30,8 +34,10 @@ public class EReference extends AbstractElement {
 
 	@Override
 	public void dispose() {
+		checkState(source != null && target != null, "This reference has already been disposed!");
 		super.dispose();
 		info.dispose();
+		info = ModelFactory.createInfoPlaceHolder();
 		source.removeRef(this);
 		source = null;
 		target = null;
@@ -63,8 +69,9 @@ public class EReference extends AbstractElement {
 	protected void setInfo(EReferenceInfo info) {
 		EReferenceInfo oldInfo = this.info;
 		oldInfo.dispose();
+		info.removeFromOwner();
+		info.setOwner(this);
 		this.info = info;
-		this.info.setOwner(this);
 		notifyDataChanged();
 	}
 
@@ -72,9 +79,11 @@ public class EReference extends AbstractElement {
 		return info;
 	}
 
-	protected void clearInfo() {
-		info = ModelFactory.createInfoPlaceHolder();
-		info.setOwner(this);
+	protected void clearInfo(EReferenceInfo info) {
+		checkArgument(this.info == info, "Info not the same! %s != %s", this.info, info);
+		info.setOwner(null);
+		this.info = ModelFactory.createInfoPlaceHolder();
+		this.info.setOwner(this);
 		notifyDataChanged();
 	}
 
@@ -82,24 +91,12 @@ public class EReference extends AbstractElement {
 		return info.isContainment();
 	}
 
-	protected void setContainment(boolean containment) {
-		info.setContainment(containment);
-	}
-
 	protected String getLowerBound() {
-		return info.getLowerBound();
-	}
-
-	protected void setLowerBound(String lowerBound) {
-		info.setLowerBound(lowerBound);
+		return info.getLowerbound();
 	}
 
 	protected String getUpperBound() {
-		return info.getUpperBound();
-	}
-
-	protected void setUpperBound(String upperBound) {
-		info.setUpperBound(upperBound);
+		return info.getUpperbound();
 	}
 
 	protected EClass getTarget() {
@@ -122,9 +119,9 @@ public class EReference extends AbstractElement {
 	@Override
 	protected ToStringHelper toStringHelper() {
 		return super.toStringHelper()					//
-				.add("source", source.getName())		//
-				.add("target", target.getName())		//
-				.add("opposite", opposite.getName())	//
+				.add("source", source != null ? source.getName() : "none")		//
+				.add("target", target != null ? target.getName() : "none")		//
+				.add("opposite", opposite != null ? opposite.getName() : "none")	//
 				.add("containment", isContainment())	//
 				.add("lowerbound", getLowerBound())			//
 				.add("upperbound", getUpperBound());

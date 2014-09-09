@@ -101,6 +101,7 @@ public class ClickToRemoveListener implements OnClickListener {
 				}
 				popup.dismiss();
 				if (mHandler.isPresent()) mHandler.get().complete(true);
+				BroadcastHelper.notify(mContext);
 			}
 		});
 

@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.View.OnDragListener;
 import android.widget.FrameLayout;
 
-class CanvasOnDragListener implements OnDragListener {
+public class CanvasOnDragListener implements OnDragListener {
 
 	private Context mContext;
 	private FrameLayout mCanvas;
@@ -64,22 +64,22 @@ class CanvasOnDragListener implements OnDragListener {
 				classView.setOnClickListenerForTitleView(new ClickToRemoveListener.Builder(mContext, anchor)
 						.with(classView).add(clazz).build());
 
-				classView.setVisibility(View.INVISIBLE);
+				classView.setVisibility(View.INVISIBLE); // hide
 				mCanvas.addView(classView);
-				// classView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
 				final float dropX = ev.getX();
 				final float dropY = ev.getY();
-				classView.post(new Runnable() {
+				mCanvas.post(new Runnable() {
 
 					@Override
 					public void run() {
 						float x = (dropX - classView.getWidth() / 2);
 						float y = (dropY - classView.getHeight() / 2);
 						classView.moveTo(x, y);
-						classView.setVisibility(View.VISIBLE);
+						classView.setVisibility(View.VISIBLE);	// show
 					}
 				});
 				data.complete(true);
+				BroadcastHelper.notify(mContext);
 				break;
 		}
 		return true;

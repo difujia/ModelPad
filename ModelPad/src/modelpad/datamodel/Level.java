@@ -14,7 +14,7 @@ public class Level implements Serializable {
 	private String subtitle;
 	private String question;
 
-	private Solution expectedSolution;
+	private Solution expectedSolution = new Solution();
 	private Set<EClass> surplusClasses = Sets.newHashSet();
 	private Set<EAttribute> surplusAttrs = Sets.newHashSet();
 	private Set<EReferenceInfo> surplusRefInfos = Sets.newHashSet();
@@ -69,8 +69,8 @@ public class Level implements Serializable {
 		return expectedSolution;
 	}
 
-	public void setExpectedSolution(Solution standardSolution) {
-		this.expectedSolution = standardSolution;
+	public void addExpectedClass(EClass structuredClass) {
+		expectedSolution.addEClass(structuredClass);
 	}
 
 	public Set<EClass> getSurplusClasses() {

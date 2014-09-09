@@ -119,34 +119,32 @@
     </display>  
   </class>  
   <association id="14">    
-    <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="15" name="mManager"/>      
+    <end type="SOURCE" refId="10" navigable="false">      
+      <attribute id="15" name="mElement"/>      
       <multiplicity id="16" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="11" navigable="true"/>    
+    <display labels="false" multiplicity="false"/>  
+  </association>  
+  <association id="17">    
+    <end type="SOURCE" refId="2" navigable="false">      
+      <attribute id="18" name="mManager"/>      
+      <multiplicity id="19" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="12" navigable="true"/>    
     <display labels="false" multiplicity="false"/>  
   </association>  
-  <association id="17">    
-    <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="18" name="mElement"/>      
-      <multiplicity id="19" minimum="0" maximum="1"/>    
-    </end>    
-    <end type="TARGET" refId="11" navigable="true"/>    
-    <display labels="false" multiplicity="false"/>  
-  </association>  
   <association id="20">    
-    <end type="SOURCE" refId="10" navigable="false">      
-      <attribute id="21" name="mElement"/>      
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="21" name="mManager"/>      
       <multiplicity id="22" minimum="0" maximum="1"/>    
     </end>    
-    <end type="TARGET" refId="11" navigable="true"/>    
+    <end type="TARGET" refId="12" navigable="true"/>    
     <display labels="false" multiplicity="false"/>  
   </association>  
   <association id="23">    
-    <end type="SOURCE" refId="8" navigable="false">      
-      <attribute id="24" name="mManager">        
-        <position height="18" width="67" x="338" y="20"/>      
-      </attribute>      
+    <end type="SOURCE" refId="5" navigable="false">      
+      <attribute id="24" name="mManager"/>      
       <multiplicity id="25" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="12" navigable="true"/>    
@@ -161,19 +159,21 @@
     <display labels="false" multiplicity="false"/>  
   </association>  
   <association id="29">    
-    <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="30" name="mManager"/>      
+    <end type="SOURCE" refId="8" navigable="false">      
+      <attribute id="30" name="mManager">        
+        <position height="18" width="67" x="338" y="20"/>      
+      </attribute>      
       <multiplicity id="31" minimum="0" maximum="1"/>    
     </end>    
     <end type="TARGET" refId="12" navigable="true"/>    
     <display labels="false" multiplicity="false"/>  
   </association>  
   <association id="32">    
-    <end type="SOURCE" refId="2" navigable="false">      
-      <attribute id="33" name="manager"/>      
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="33" name="mElement"/>      
       <multiplicity id="34" minimum="0" maximum="1"/>    
     </end>    
-    <end type="TARGET" refId="12" navigable="true"/>    
+    <end type="TARGET" refId="11" navigable="true"/>    
     <display labels="false" multiplicity="false"/>  
   </association>  
   <association id="35">    
@@ -185,7 +185,7 @@
     <display labels="false" multiplicity="false"/>  
   </association>  
   <association id="38">    
-    <end type="SOURCE" refId="5" navigable="false">      
+    <end type="SOURCE" refId="3" navigable="false">      
       <attribute id="39" name="mManager"/>      
       <multiplicity id="40" minimum="0" maximum="1"/>    
     </end>    

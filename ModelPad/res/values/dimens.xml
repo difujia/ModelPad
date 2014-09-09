@@ -5,9 +5,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="section_padding">6dp</dimen>
     <dimen name="element_padding">6dp</dimen>
-    <dimen name="list_section_padding">1dp</dimen>
     <dimen name="class_padding">6dp</dimen>
-    <dimen name="class_padding_bottom">26dp</dimen>
+    <dimen name="list_section_padding">1dp</dimen>
     <dimen name="border_stroke_width">2dp</dimen>
     <dimen name="border_stroke_dashwidth">6dp</dimen>
     <dimen name="border_stroke_dashgap">3dp</dimen>

@@ -1,5 +1,7 @@
 package modelpad.datamodel;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import java.util.Collections;
 import java.util.Set;
 
@@ -75,7 +77,7 @@ public class EClass extends AbstractElement {
 	}
 
 	protected boolean removeAttr(EAttribute attr) {
-		if (!hasAttr(attr)) return false;
+		checkState(hasAttr(attr), "Attribute %s not belongs to class %s", attr, getName());
 		attr.setOwner(null);
 		return getAttrs().remove(attr);
 	}

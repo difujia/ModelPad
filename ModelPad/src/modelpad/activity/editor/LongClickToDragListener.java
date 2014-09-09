@@ -7,7 +7,7 @@ import android.view.View.OnLongClickListener;
 
 import com.google.common.base.Optional;
 
-class LongClickToDragListener implements OnLongClickListener {
+public class LongClickToDragListener implements OnLongClickListener {
 
 	private AbstractElement mElement;
 	private Optional<CompletionHandler> mHandler;

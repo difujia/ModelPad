@@ -1,5 +1,7 @@
 package modelpad.datamodel;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.base.Objects.ToStringHelper;
 
 public class EReferenceInfo extends AbstractElement {
@@ -31,10 +33,7 @@ public class EReferenceInfo extends AbstractElement {
 
 	@Override
 	public void dispose() {
-		if (owner != null) {
-			owner.clearInfo();
-			owner = null;
-		}
+		removeFromOwner();
 		super.dispose();
 	}
 
@@ -52,48 +51,39 @@ public class EReferenceInfo extends AbstractElement {
 	protected boolean match(AbstractElement other) {
 		if (lookslike(other)) {
 			EReferenceInfo that = (EReferenceInfo) other;
-			return owner.match(that.owner);
+			return checkNotNull(owner).match(checkNotNull(that.owner));
 		} else {
 			return false;
 		}
 	}
 
-	protected boolean isContainment() {
+	public boolean isContainment() {
 		return containment;
 	}
 
-	protected void setContainment(boolean containment) {
-		this.containment = containment;
-	}
-
-	protected String getLowerBound() {
+	public String getLowerbound() {
 		return lowerbound;
 	}
 
-	protected void setLowerBound(String lowerbound) {
-		this.lowerbound = lowerbound;
-	}
-
-	protected String getUpperBound() {
+	public String getUpperbound() {
 		return upperbound;
 	}
 
-	protected void setUpperBound(String upperBound) {
-		upperbound = upperBound;
+	protected void setOwner(EReference owner) {
+		this.owner = owner;
 	}
 
-	protected void setOwner(EReference owner) {
-		EReference oldOwner = this.owner;
-		if (oldOwner != null) {
-			oldOwner.clearInfo();
+	protected void removeFromOwner() {
+		if (owner != null) {
+			owner.clearInfo(this);
+			owner = null;
 		}
-		this.owner = owner;
 	}
 
 	@Override
 	protected ToStringHelper toStringHelper() {
 		return super.toStringHelper().add("containment", isContainment())	//
-				.add("lowerBound", getLowerBound())							//
-				.add("upperBound", getUpperBound());
+				.add("lowerBound", getLowerbound())							//
+				.add("upperBound", getUpperbound());
 	}
 }

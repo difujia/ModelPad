@@ -11,6 +11,8 @@ public class Solution implements Serializable {
 
 	private Set<EClass> structure = new HashSet<>();
 
+	protected Solution() {}
+
 	void addEClass(EClass clazz) {
 		structure.add(clazz);
 	}

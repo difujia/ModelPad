@@ -60,10 +60,7 @@ public class EAttribute extends AbstractElement {
 
 	protected void removeFromOwner() {
 		if (owner != null) {
-			boolean modified = owner.removeAttr(this);
-			if (!modified) {
-				throw new IllegalStateException("Owner doesn't have this attribute");
-			}
+			owner.removeAttr(this);
 			owner = null;
 		}
 	}

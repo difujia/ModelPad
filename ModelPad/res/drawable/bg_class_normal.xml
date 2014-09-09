@@ -9,7 +9,7 @@
         android:color="@color/black" />
 
     <padding
-        android:bottom="@dimen/class_padding_bottom"
+        android:bottom="@dimen/class_padding"
         android:left="@dimen/class_padding"
         android:right="@dimen/class_padding"
         android:top="@dimen/class_padding" />

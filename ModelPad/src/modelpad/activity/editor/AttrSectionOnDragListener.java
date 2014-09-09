@@ -78,6 +78,7 @@ public class AttrSectionOnDragListener implements OnDragListener {
 
 				thisSection.addView(attrView);
 				data.complete(true);
+				BroadcastHelper.notify(mContext);
 				break;
 			case DragEvent.ACTION_DRAG_ENDED:
 				thisSection.beNormal();

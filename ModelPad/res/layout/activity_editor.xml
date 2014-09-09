@@ -2,7 +2,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:baselineAligned="false"
+    android:divider="@drawable/divider_horizontal"
     android:orientation="horizontal"
+    android:showDividers="middle"
     android:weightSum="10" >
 
     <LinearLayout
@@ -17,9 +19,38 @@
             android:layout_height="wrap_content"
             android:lineSpacingMultiplier="1.2"
             android:maxLines="10"
-            android:scrollbars="vertical"
             android:padding="6dp"
+            android:scrollbars="vertical"
             android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Progress"
+            android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <ProgressBar
+                android:id="@+id/progressbar"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:maxHeight="12dp"
+                android:minHeight="12dp"
+                android:progressDrawable="@drawable/custom_progress" />
+
+            <Button
+                android:id="@+id/check"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Check" />
+        </LinearLayout>
 
         <com.hb.views.PinnedSectionListView
             android:id="@+id/editor_list"

@@ -8,6 +8,8 @@ import modelpad.datamodel.ClassViewModel;
 import modelpad.datamodel.SimpleObserver;
 import modelpad.viewutils.ViewHelper;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -24,8 +26,10 @@ import android.widget.TextView;
 public class ClassView extends LinearLayout implements VisualResponder {
 
 	private static final String TAG = "ClassView";
+	private LinearLayout mInnerLayout;
 	private ElementView mTitleView;
 	private ViewGroup mAttrSection;
+	private Bitmap mCornerImage;
 
 	private Set<ViewGeoChangeListener> listeners = new HashSet<>();
 	private ClassViewModel mClassVM;
@@ -45,7 +49,8 @@ public class ClassView extends LinearLayout implements VisualResponder {
 	private float mStartX = -1;
 	private float mStartY = -1;
 	private RectF mDragRect = new RectF();
-	private float mDragRectSideLength = 25;
+	private static final int DRAG_RECT_SIDE = 36;
+	private static final int CORNER_OFFSET = 2;
 
 	private Paint cornerPaint;
 
@@ -65,14 +70,21 @@ public class ClassView extends LinearLayout implements VisualResponder {
 	}
 
 	private void init() {
+		setWillNotDraw(false);
 		setOrientation(VERTICAL);
-		setBackgroundResource(R.drawable.bg_class_normal);
+		mInnerLayout = new LinearLayout(getContext());
+		mInnerLayout.setOrientation(VERTICAL);
+		mInnerLayout.setMinimumWidth(120);
+		addView(mInnerLayout);
+		beNormal();
+		setPadding(0, 0, 0, DRAG_RECT_SIDE);
+
 		// create title view
 		mTitleView = new ElementView(getContext());
 		mTitleView.setTypeface(mTitleView.getTypeface(), Typeface.BOLD);
 		mTitleView.setTextSize(16);
 		mTitleView.setGravity(Gravity.CENTER);
-		addView(mTitleView);
+		mInnerLayout.addView(mTitleView);
 
 		// create section view
 		mAttrSection = ViewHelper.createClassSection(getContext());
@@ -80,12 +92,16 @@ public class ClassView extends LinearLayout implements VisualResponder {
 		sectionLabel.setTypeface(sectionLabel.getTypeface(), Typeface.ITALIC);
 		sectionLabel.setText("attributes");
 		mAttrSection.addView(sectionLabel);
-		addView(mAttrSection);
+		mInnerLayout.addView(mAttrSection);
 
 		// create corner paint
 		cornerPaint = new Paint();
-		cornerPaint.setStyle(Style.FILL);
-		cornerPaint.setColor(Color.BLUE);
+		cornerPaint.setStyle(Style.STROKE);
+		cornerPaint.setColor(Color.BLACK);
+		cornerPaint.setStrokeWidth(2);
+
+		// load image
+		mCornerImage = BitmapFactory.decodeResource(getResources(), R.drawable.cross);
 	}
 
 	private void update() {
@@ -136,12 +152,12 @@ public class ClassView extends LinearLayout implements VisualResponder {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		// float left = getWidth() - mDragRectSideLength;
-		float left = 0;
-		float top = getHeight() - mDragRectSideLength;
-		float right = getWidth();
-		float bottom = getHeight();
+		float left = getWidth() - DRAG_RECT_SIDE - CORNER_OFFSET;
+		float top = getHeight() - DRAG_RECT_SIDE;
+		float right = getWidth() - CORNER_OFFSET;
+		float bottom = getHeight() - CORNER_OFFSET;
 		mDragRect.set(left, top, right, bottom);
+		canvas.drawBitmap(mCornerImage, null, mDragRect, null);
 		canvas.drawRect(mDragRect, cornerPaint);
 	}
 
@@ -209,16 +225,16 @@ public class ClassView extends LinearLayout implements VisualResponder {
 
 	@Override
 	public void beActive() {
-		setBackgroundResource(R.drawable.bg_class_active);
+		mInnerLayout.setBackgroundResource(R.drawable.bg_class_active);
 	}
 
 	@Override
 	public void beTarget() {
-		setBackgroundResource(R.drawable.bg_class_target);
+		mInnerLayout.setBackgroundResource(R.drawable.bg_class_target);
 	}
 
 	@Override
 	public void beNormal() {
-		setBackgroundResource(R.drawable.bg_class_normal);
+		mInnerLayout.setBackgroundResource(R.drawable.bg_class_normal);
 	}
 }

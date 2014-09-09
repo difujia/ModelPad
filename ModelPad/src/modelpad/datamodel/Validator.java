@@ -67,37 +67,38 @@ public class Validator {
 
 	public void validate() {
 
-		Set<EClass> userClasses = Sets.newHashSet();
-		Set<EAttribute> userAttrs = Sets.newHashSet();
-		Set<EReference> userRefs = Sets.newHashSet();
-		unbox(playerSolution, userClasses, userAttrs, userRefs);
-		Set<EReferenceInfo> userRefInfos = FluentIterable.from(userRefs).transform(toRefInfo).toSet();
+		Set<EClass> playerClasses = Sets.newHashSet();
+		Set<EAttribute> playerAttrs = Sets.newHashSet();
+		Set<EReference> playerRefs = Sets.newHashSet();
+		unbox(playerSolution, playerClasses, playerAttrs, playerRefs);
+		Set<EReferenceInfo> playerRefInfos = FluentIterable.from(playerRefs).transform(toRefInfo).toSet();
 
-		Set<EClass> expClasses = Sets.newHashSet();
-		Set<EAttribute> expAttrs = Sets.newHashSet();
-		Set<EReference> expRefs = Sets.newHashSet();
-		unbox(expectedSolution, expClasses, expAttrs, expRefs);
-		Set<EReferenceInfo> expRefInfos = FluentIterable.from(expRefs).transform(toRefInfo).toSet();
+		Set<EClass> exptClasses = Sets.newHashSet();
+		Set<EAttribute> exptAttrs = Sets.newHashSet();
+		Set<EReference> exptRefs = Sets.newHashSet();
+		unbox(expectedSolution, exptClasses, exptAttrs, exptRefs);
+		Set<EReferenceInfo> exptRefInfos = FluentIterable.from(exptRefs).transform(toRefInfo).toSet();
 
-		allExpected = ImmutableSet.copyOf(Iterables.concat(expClasses, expAttrs, expRefs));
+		allExpected = ImmutableSet.copyOf(Iterables.concat(exptClasses, exptAttrs, exptRefs));
 
-		matchedClasses = FluentIterable.from(userClasses).filter(matchAnyIn(expClasses)).toSet();
-		matchedAttrs = FluentIterable.from(userAttrs).filter(matchAnyIn(expAttrs)).toSet();
-		matchedRefs = FluentIterable.from(userRefs).filter(matchAnyIn(expRefs)).toSet();
+		matchedClasses = FluentIterable.from(playerClasses).filter(matchAnyIn(exptClasses)).toSet();
+		matchedAttrs = FluentIterable.from(playerAttrs).filter(matchAnyIn(exptAttrs)).toSet();
+		matchedRefs = FluentIterable.from(playerRefs).filter(matchAnyIn(exptRefs)).toSet();
 		Set<EReferenceInfo> matchedRefInfos = FluentIterable.from(matchedRefs).transform(toRefInfo).toSet();
 
-		unexpectedClasses = FluentIterable.from(userClasses).filter(notLookslikeAnyIn(expClasses)).toSet();
-		unexpectedAttrs = FluentIterable.from(userAttrs).filter(notLookslikeAnyIn(expAttrs)).toSet();
-		unexpectedRefInfos = FluentIterable.from(userRefInfos).filter(notPlaceHolder).filter(notLookslikeAnyIn(expRefInfos)).toSet();
+		unexpectedClasses = FluentIterable.from(playerClasses).filter(notLookslikeAnyIn(exptClasses)).toSet();
+		unexpectedAttrs = FluentIterable.from(playerAttrs).filter(notLookslikeAnyIn(exptAttrs)).toSet();
+		unexpectedRefInfos = FluentIterable.from(playerRefInfos).filter(notPlaceHolder)
+				.filter(notLookslikeAnyIn(exptRefInfos)).toSet();
 
-		misplacedAttrs = FluentIterable.from(userAttrs).filter(notIn(matchedAttrs)).filter(notIn(unexpectedAttrs))
+		misplacedAttrs = FluentIterable.from(playerAttrs).filter(notIn(matchedAttrs)).filter(notIn(unexpectedAttrs))
 				.toSet();
-		misplacedRefInfos = FluentIterable.from(userRefInfos).filter(notPlaceHolder).filter(notIn(matchedRefInfos))
+		misplacedRefInfos = FluentIterable.from(playerRefInfos).filter(notPlaceHolder).filter(notIn(matchedRefInfos))
 				.filter(notIn(unexpectedRefInfos)).toSet();
 
-		missingClasses = FluentIterable.from(expClasses).filter(notLookslikeAnyIn(userClasses)).toSet();
-		missingAttrs = FluentIterable.from(expAttrs).filter(notLookslikeAnyIn(userAttrs)).toSet();
-		missingRefInfos = FluentIterable.from(expRefInfos).filter(notLookslikeAnyIn(userRefInfos)).toSet();
+		missingClasses = FluentIterable.from(exptClasses).filter(notLookslikeAnyIn(playerClasses)).toSet();
+		missingAttrs = FluentIterable.from(exptAttrs).filter(notLookslikeAnyIn(playerAttrs)).toSet();
+		missingRefInfos = FluentIterable.from(exptRefInfos).filter(notLookslikeAnyIn(playerRefInfos)).toSet();
 	}
 
 	private <T> Predicate<T> notIn(final Collection<T> c) {
@@ -115,19 +116,6 @@ public class Validator {
 			public boolean apply(T arg) {
 				for (T element : c) {
 					if (arg.match(element)) return true;
-				}
-				return false;
-			}
-		};
-	}
-
-	private <T extends AbstractElement> Predicate<T> lookslikeAnyIn(final Collection<T> c) {
-		return new Predicate<T>() {
-
-			@Override
-			public boolean apply(T arg) {
-				for (T element : c) {
-					if (arg.lookslike(element)) return true;
 				}
 				return false;
 			}
